@@ -67,18 +67,6 @@
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent" />
 
-        <TextView
-            android:id="@+id/tvSubtitle"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="8dp"
-            android:text="Đặt vé dễ dàng, xem phim cực đã"
-            android:textColor="@color/text_secondary"
-            android:textSize="14sp"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@id/tvLogoTitle" />
-
         <EditText
             android:id="@+id/edtEmail"
             android:layout_width="match_parent"
@@ -88,12 +76,11 @@
             android:hint="Email của bạn"
             android:inputType="textEmailAddress"
             android:paddingHorizontal="16dp"
-            android:paddingTop="16dp"
+            android:gravity="center_vertical"
             android:textColor="@color/text_primary"
             android:textColorHint="@color/text_secondary"
             android:textSize="15sp"
-            app:layout_constraintTop_toBottomOf="@id/tvSubtitle" />
-
+            app:layout_constraintTop_toBottomOf="@id/tvLogoTitle" />
         <EditText
             android:id="@+id/edtPassword"
             android:layout_width="match_parent"
@@ -103,7 +90,7 @@
             android:hint="Mật khẩu"
             android:inputType="textPassword"
             android:paddingHorizontal="16dp"
-            android:paddingTop="16dp"
+            android:gravity="center_vertical"
             android:textColor="@color/text_primary"
             android:textColorHint="@color/text_secondary"
             android:textSize="15sp"
@@ -125,10 +112,9 @@
             android:layout_width="match_parent"
             android:layout_height="55dp"
             android:layout_marginTop="28dp"
-            android:paddingTop="16dp"
             android:background="@drawable/bg_neon_button"
             android:text="Đăng Nhập"
-            android:textAlignment="center"
+            android:gravity="center"
             android:textAllCaps="false"
             android:textColor="@color/bg_main"
             android:textSize="16sp"
