@@ -5,7 +5,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="@color/bg_main"
+    android:background="@drawable/img_bg_bot"
     tools:context=".BookingActivity">
 
     <androidx.constraintlayout.widget.ConstraintLayout
@@ -124,7 +124,7 @@
                 android:layout_marginHorizontal="20dp"
                 android:layout_marginTop="24dp"
                 android:text="Các rạp khả dụng"
-                android:textColor="@color/text_primary"
+                android:textColor="@color/text_primary_black"
                 android:textSize="16sp"
                 android:textStyle="bold" />
 
@@ -160,7 +160,7 @@
     <androidx.constraintlayout.widget.ConstraintLayout
         android:layout_width="match_parent"
         android:layout_height="90dp"
-        android:background="#E60B0C10"
+        android:background="#33FFFFFF"
         android:paddingHorizontal="24dp"
         android:paddingTop="16dp"
         android:paddingBottom="20dp"

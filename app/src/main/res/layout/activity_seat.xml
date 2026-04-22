@@ -5,7 +5,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="@color/bg_main"
+    android:background="@drawable/img_bg_login_low"
     tools:context=".SeatActivity">
 
     <androidx.constraintlayout.widget.ConstraintLayout
@@ -87,7 +87,7 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:text="Lối vào"
-                    android:textColor="@color/text_secondary"
+                    android:textColor="@color/text_secondary_black"
                     android:textSize="12sp"
                     android:textStyle="italic" />
             </LinearLayout>
@@ -109,7 +109,7 @@
                     <TextView android:layout_width="40dp" android:layout_height="40dp" android:layout_margin="4dp" android:background="@drawable/bg_input" android:text="A1" android:textColor="@color/text_primary" android:gravity="center" android:textSize="11sp"/>
                     <TextView android:layout_width="40dp" android:layout_height="40dp" android:layout_margin="4dp" android:background="@drawable/bg_input" android:text="A2" android:textColor="@color/text_primary" android:gravity="center" android:textSize="11sp"/>
                     <View android:layout_width="20dp" android:layout_height="40dp" />
-                    <TextView android:layout_width="40dp" android:layout_height="40dp" android:layout_margin="4dp" android:background="@drawable/bg_input" android:backgroundTint="#1F2833" android:text="A3" android:textColor="#666666" android:gravity="center" android:textSize="11sp"/>
+                    <TextView android:layout_width="40dp" android:layout_height="40dp" android:layout_margin="4dp" android:background="@drawable/bg_input" android:backgroundTint="#1F2833" android:text="A3" android:textColor="@color/text_primary" android:gravity="center" android:textSize="11sp"/>
                     <TextView android:layout_width="40dp" android:layout_height="40dp" android:layout_margin="4dp" android:background="@drawable/bg_input" android:text="A4" android:textColor="@color/text_primary" android:gravity="center" android:textSize="11sp"/>
                     <TextView android:layout_width="40dp" android:layout_height="40dp" android:layout_margin="4dp" android:background="@drawable/bg_input" android:text="A5" android:textColor="@color/text_primary" android:gravity="center" android:textSize="11sp"/>
                     <TextView android:layout_width="40dp" android:layout_height="40dp" android:layout_margin="4dp" android:background="@drawable/bg_input" android:text="A6" android:textColor="@color/text_primary" android:gravity="center" android:textSize="11sp"/>
@@ -122,10 +122,10 @@
                     <TextView android:layout_width="40dp" android:layout_height="40dp" android:layout_margin="4dp" android:background="@drawable/bg_input" android:backgroundTint="#D4AF37" android:text="B5" android:textColor="@color/bg_main" android:textStyle="bold" android:gravity="center" android:textSize="11sp"/>
                     <TextView android:layout_width="40dp" android:layout_height="40dp" android:layout_margin="4dp" android:background="@drawable/bg_input" android:backgroundTint="#D4AF37" android:text="B6" android:textColor="@color/bg_main" android:textStyle="bold" android:gravity="center" android:textSize="11sp"/>
 
-                    <TextView android:layout_width="88dp" android:layout_height="40dp" android:layout_margin="4dp" android:layout_columnSpan="2" android:background="@drawable/bg_input" android:backgroundTint="#E91E63" android:text="M1" android:textColor="@color/white" android:textStyle="bold" android:gravity="center" android:textSize="11sp"/>
+                    <TextView android:layout_width="88dp" android:layout_height="40dp" android:layout_margin="4dp" android:layout_columnSpan="2" android:background="@drawable/bg_input" android:backgroundTint="#E91E63" android:text="M1" android:textColor="@color/text_primary" android:textStyle="bold" android:gravity="center" android:textSize="11sp"/>
                     <View android:layout_width="20dp" android:layout_height="40dp" />
-                    <TextView android:layout_width="88dp" android:layout_height="40dp" android:layout_margin="4dp" android:layout_columnSpan="2" android:background="@drawable/bg_input" android:backgroundTint="#E91E63" android:text="M2" android:textColor="@color/white" android:textStyle="bold" android:gravity="center" android:textSize="11sp"/>
-                    <TextView android:layout_width="88dp" android:layout_height="40dp" android:layout_margin="4dp" android:layout_columnSpan="2" android:background="@drawable/bg_input" android:backgroundTint="#E91E63" android:text="M3" android:textColor="@color/white" android:textStyle="bold" android:gravity="center" android:textSize="11sp"/>
+                    <TextView android:layout_width="88dp" android:layout_height="40dp" android:layout_margin="4dp" android:layout_columnSpan="2" android:background="@drawable/bg_input" android:backgroundTint="#E91E63" android:text="M2" android:textColor="@color/text_primary" android:textStyle="bold" android:gravity="center" android:textSize="11sp"/>
+                    <TextView android:layout_width="88dp" android:layout_height="40dp" android:layout_margin="4dp" android:layout_columnSpan="2" android:background="@drawable/bg_input" android:backgroundTint="#E91E63" android:text="M3" android:textColor="@color/text_primary" android:textStyle="bold" android:gravity="center" android:textSize="11sp"/>
                 </GridLayout>
             </HorizontalScrollView>
 
@@ -139,27 +139,27 @@
 
                 <LinearLayout android:layout_width="100dp" android:layout_height="wrap_content" android:gravity="center_vertical" android:layout_marginBottom="12dp">
                     <View android:layout_width="16dp" android:layout_height="16dp" android:background="@drawable/bg_input"/>
-                    <TextView android:layout_width="wrap_content" android:layout_height="wrap_content" android:text="Thường" android:textColor="@color/text_secondary" android:textSize="12sp" android:layout_marginStart="8dp"/>
+                    <TextView android:layout_width="wrap_content" android:layout_height="wrap_content" android:text="Thường" android:textColor="@color/text_secondary_black" android:textSize="12sp" android:layout_marginStart="8dp"/>
                 </LinearLayout>
 
                 <LinearLayout android:layout_width="100dp" android:layout_height="wrap_content" android:gravity="center_vertical" android:layout_marginBottom="12dp">
                     <View android:layout_width="16dp" android:layout_height="16dp" android:background="@drawable/bg_input" android:backgroundTint="#D4AF37"/>
-                    <TextView android:layout_width="wrap_content" android:layout_height="wrap_content" android:text="VIP" android:textColor="@color/text_secondary" android:textSize="12sp" android:layout_marginStart="8dp"/>
+                    <TextView android:layout_width="wrap_content" android:layout_height="wrap_content" android:text="VIP" android:textColor="@color/text_secondary_black" android:textSize="12sp" android:layout_marginStart="8dp"/>
                 </LinearLayout>
 
                 <LinearLayout android:layout_width="100dp" android:layout_height="wrap_content" android:gravity="center_vertical" android:layout_marginBottom="12dp">
                     <View android:layout_width="24dp" android:layout_height="16dp" android:background="@drawable/bg_input" android:backgroundTint="#E91E63"/>
-                    <TextView android:layout_width="wrap_content" android:layout_height="wrap_content" android:text="Ghế Đôi" android:textColor="@color/text_secondary" android:textSize="12sp" android:layout_marginStart="8dp"/>
+                    <TextView android:layout_width="wrap_content" android:layout_height="wrap_content" android:text="Ghế Đôi" android:textColor="@color/text_secondary_black" android:textSize="12sp" android:layout_marginStart="8dp"/>
                 </LinearLayout>
 
                 <LinearLayout android:layout_width="100dp" android:layout_height="wrap_content" android:gravity="center_vertical">
                     <View android:layout_width="16dp" android:layout_height="16dp" android:background="@drawable/bg_neon_button"/>
-                    <TextView android:layout_width="wrap_content" android:layout_height="wrap_content" android:text="Đang chọn" android:textColor="@color/text_secondary" android:textSize="12sp" android:layout_marginStart="8dp"/>
+                    <TextView android:layout_width="wrap_content" android:layout_height="wrap_content" android:text="Đang chọn" android:textColor="@color/text_secondary_black" android:textSize="12sp" android:layout_marginStart="8dp"/>
                 </LinearLayout>
 
                 <LinearLayout android:layout_width="100dp" android:layout_height="wrap_content" android:gravity="center_vertical">
                     <View android:layout_width="16dp" android:layout_height="16dp" android:background="@drawable/bg_input" android:backgroundTint="#1F2833"/>
-                    <TextView android:layout_width="wrap_content" android:layout_height="wrap_content" android:text="Đã đặt" android:textColor="@color/text_secondary" android:textSize="12sp" android:layout_marginStart="8dp"/>
+                    <TextView android:layout_width="wrap_content" android:layout_height="wrap_content" android:text="Đã đặt" android:textColor="@color/text_secondary_black" android:textSize="12sp" android:layout_marginStart="8dp"/>
                 </LinearLayout>
             </GridLayout>
 

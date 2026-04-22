@@ -5,7 +5,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="@color/bg_main"
+    android:background="@drawable/img_bg_bot"
     tools:context=".SnacksActivity">
 
     <androidx.constraintlayout.widget.ConstraintLayout

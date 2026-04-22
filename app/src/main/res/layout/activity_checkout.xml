@@ -5,7 +5,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="@color/bg_main"
+    android:background="@drawable/img_bg_bot"
     tools:context=".CheckoutActivity">
 
     <androidx.constraintlayout.widget.ConstraintLayout
@@ -322,8 +322,8 @@
                 android:layout_height="wrap_content"
                 android:layout_marginTop="24dp"
                 android:orientation="horizontal">
-                <TextView android:layout_width="0dp" android:layout_height="wrap_content" android:layout_weight="1" android:text="Tạm tính" android:textColor="@color/text_secondary" android:textSize="14sp" />
-                <TextView android:layout_width="wrap_content" android:layout_height="wrap_content" android:text="240.000 đ" android:textColor="@color/text_primary" android:textSize="14sp" />
+                <TextView android:layout_width="0dp" android:layout_height="wrap_content" android:layout_weight="1" android:text="Tạm tính" android:textColor="@color/text_secondary_black" android:textSize="14sp" />
+                <TextView android:layout_width="wrap_content" android:layout_height="wrap_content" android:text="240.000 đ" android:textColor="@color/text_primary_black" android:textSize="14sp" />
             </LinearLayout>
 
             <LinearLayout
@@ -331,7 +331,7 @@
                 android:layout_height="wrap_content"
                 android:layout_marginTop="12dp"
                 android:orientation="horizontal">
-                <TextView android:layout_width="0dp" android:layout_height="wrap_content" android:layout_weight="1" android:text="Giảm giá" android:textColor="@color/text_secondary" android:textSize="14sp" />
+                <TextView android:layout_width="0dp" android:layout_height="wrap_content" android:layout_weight="1" android:text="Giảm giá" android:textColor="@color/text_secondary_black" android:textSize="14sp" />
                 <TextView android:layout_width="wrap_content" android:layout_height="wrap_content" android:text="- 0 đ" android:textColor="@color/error_red" android:textSize="14sp" android:layout_marginBottom="100dp" />
             </LinearLayout>
 
@@ -341,7 +341,7 @@
     <androidx.constraintlayout.widget.ConstraintLayout
         android:layout_width="match_parent"
         android:layout_height="100dp"
-        android:background="#E60B0C10"
+        android:background="#99121212"
         android:paddingHorizontal="20dp"
         app:layout_constraintBottom_toBottomOf="parent">
 
