@@ -81,7 +81,7 @@
                 <ImageView
                     android:layout_width="24dp"
                     android:layout_height="24dp"
-                    android:src="@android:drawable/ic_menu_forward"
+                    android:src="@android:drawable/ic_media_play"
                     app:tint="@color/text_secondary" />
                 <TextView
                     android:layout_width="wrap_content"
@@ -106,26 +106,26 @@
                     android:columnCount="7"
                     android:rowCount="4">
 
-                    <TextView android:layout_width="40dp" android:layout_height="40dp" android:layout_margin="4dp" android:background="@drawable/bg_input" android:text="A1" android:textColor="@color/text_primary" android:gravity="center" android:textSize="11sp"/>
-                    <TextView android:layout_width="40dp" android:layout_height="40dp" android:layout_margin="4dp" android:background="@drawable/bg_input" android:text="A2" android:textColor="@color/text_primary" android:gravity="center" android:textSize="11sp"/>
+                    <TextView android:id="@+id/seatA1" android:layout_width="40dp" android:layout_height="40dp" android:layout_margin="4dp" android:background="@drawable/bg_input" android:text="A1" android:textColor="@color/text_primary" android:gravity="center" android:textSize="11sp"/>
+                    <TextView android:id="@+id/seatA2" android:layout_width="40dp" android:layout_height="40dp" android:layout_margin="4dp" android:background="@drawable/bg_input" android:text="A2" android:textColor="@color/text_primary" android:gravity="center" android:textSize="11sp"/>
                     <View android:layout_width="20dp" android:layout_height="40dp" />
-                    <TextView android:layout_width="40dp" android:layout_height="40dp" android:layout_margin="4dp" android:background="@drawable/bg_input" android:backgroundTint="#1F2833" android:text="A3" android:textColor="@color/text_primary" android:gravity="center" android:textSize="11sp"/>
-                    <TextView android:layout_width="40dp" android:layout_height="40dp" android:layout_margin="4dp" android:background="@drawable/bg_input" android:text="A4" android:textColor="@color/text_primary" android:gravity="center" android:textSize="11sp"/>
-                    <TextView android:layout_width="40dp" android:layout_height="40dp" android:layout_margin="4dp" android:background="@drawable/bg_input" android:text="A5" android:textColor="@color/text_primary" android:gravity="center" android:textSize="11sp"/>
-                    <TextView android:layout_width="40dp" android:layout_height="40dp" android:layout_margin="4dp" android:background="@drawable/bg_input" android:text="A6" android:textColor="@color/text_primary" android:gravity="center" android:textSize="11sp"/>
+                    <TextView android:id="@+id/seatA3" android:layout_width="40dp" android:layout_height="40dp" android:layout_margin="4dp" android:background="@drawable/bg_input" android:backgroundTint="#1F2833" android:text="A3" android:textColor="@color/text_primary" android:gravity="center" android:textSize="11sp"/>
+                    <TextView android:id="@+id/seatA4" android:layout_width="40dp" android:layout_height="40dp" android:layout_margin="4dp" android:background="@drawable/bg_input" android:text="A4" android:textColor="@color/text_primary" android:gravity="center" android:textSize="11sp"/>
+                    <TextView android:id="@+id/seatA5" android:layout_width="40dp" android:layout_height="40dp" android:layout_margin="4dp" android:background="@drawable/bg_input" android:text="A5" android:textColor="@color/text_primary" android:gravity="center" android:textSize="11sp"/>
+                    <TextView android:id="@+id/seatA6" android:layout_width="40dp" android:layout_height="40dp" android:layout_margin="4dp" android:background="@drawable/bg_input" android:text="A6" android:textColor="@color/text_primary" android:gravity="center" android:textSize="11sp"/>
 
-                    <TextView android:layout_width="40dp" android:layout_height="40dp" android:layout_margin="4dp" android:background="@drawable/bg_input" android:backgroundTint="#D4AF37" android:text="B1" android:textColor="@color/bg_main" android:textStyle="bold" android:gravity="center" android:textSize="11sp"/>
-                    <TextView android:layout_width="40dp" android:layout_height="40dp" android:layout_margin="4dp" android:background="@drawable/bg_input" android:backgroundTint="#D4AF37" android:text="B2" android:textColor="@color/bg_main" android:textStyle="bold" android:gravity="center" android:textSize="11sp"/>
+                    <TextView android:id="@+id/seatB1" android:layout_width="40dp" android:layout_height="40dp" android:layout_margin="4dp" android:background="@drawable/bg_input" android:backgroundTint="#D4AF37" android:text="B1" android:textColor="@color/bg_main" android:textStyle="bold" android:gravity="center" android:textSize="11sp"/>
+                    <TextView android:id="@+id/seatB2" android:layout_width="40dp" android:layout_height="40dp" android:layout_margin="4dp" android:background="@drawable/bg_input" android:backgroundTint="#D4AF37" android:text="B2" android:textColor="@color/bg_main" android:textStyle="bold" android:gravity="center" android:textSize="11sp"/>
                     <View android:layout_width="20dp" android:layout_height="40dp" />
-                    <TextView android:layout_width="40dp" android:layout_height="40dp" android:layout_margin="4dp" android:background="@drawable/bg_neon_button" android:text="B3" android:textColor="@color/bg_main" android:textStyle="bold" android:gravity="center" android:textSize="11sp"/>
-                    <TextView android:layout_width="40dp" android:layout_height="40dp" android:layout_margin="4dp" android:background="@drawable/bg_neon_button" android:text="B4" android:textColor="@color/bg_main" android:textStyle="bold" android:gravity="center" android:textSize="11sp"/>
-                    <TextView android:layout_width="40dp" android:layout_height="40dp" android:layout_margin="4dp" android:background="@drawable/bg_input" android:backgroundTint="#D4AF37" android:text="B5" android:textColor="@color/bg_main" android:textStyle="bold" android:gravity="center" android:textSize="11sp"/>
-                    <TextView android:layout_width="40dp" android:layout_height="40dp" android:layout_margin="4dp" android:background="@drawable/bg_input" android:backgroundTint="#D4AF37" android:text="B6" android:textColor="@color/bg_main" android:textStyle="bold" android:gravity="center" android:textSize="11sp"/>
+                    <TextView android:id="@+id/seatB3" android:layout_width="40dp" android:layout_height="40dp" android:layout_margin="4dp" android:background="@drawable/bg_neon_button" android:text="B3" android:textColor="@color/bg_main" android:textStyle="bold" android:gravity="center" android:textSize="11sp"/>
+                    <TextView android:id="@+id/seatB4" android:layout_width="40dp" android:layout_height="40dp" android:layout_margin="4dp" android:background="@drawable/bg_neon_button" android:text="B4" android:textColor="@color/bg_main" android:textStyle="bold" android:gravity="center" android:textSize="11sp"/>
+                    <TextView android:id="@+id/seatB5" android:layout_width="40dp" android:layout_height="40dp" android:layout_margin="4dp" android:background="@drawable/bg_input" android:backgroundTint="#D4AF37" android:text="B5" android:textColor="@color/bg_main" android:textStyle="bold" android:gravity="center" android:textSize="11sp"/>
+                    <TextView android:id="@+id/seatB6" android:layout_width="40dp" android:layout_height="40dp" android:layout_margin="4dp" android:background="@drawable/bg_input" android:backgroundTint="#D4AF37" android:text="B6" android:textColor="@color/bg_main" android:textStyle="bold" android:gravity="center" android:textSize="11sp"/>
 
-                    <TextView android:layout_width="88dp" android:layout_height="40dp" android:layout_margin="4dp" android:layout_columnSpan="2" android:background="@drawable/bg_input" android:backgroundTint="#E91E63" android:text="M1" android:textColor="@color/text_primary" android:textStyle="bold" android:gravity="center" android:textSize="11sp"/>
+                    <TextView android:id="@+id/seatM1" android:layout_width="88dp" android:layout_height="40dp" android:layout_margin="4dp" android:layout_columnSpan="2" android:background="@drawable/bg_input" android:backgroundTint="#E91E63" android:text="M1" android:textColor="@color/text_primary" android:textStyle="bold" android:gravity="center" android:textSize="11sp"/>
                     <View android:layout_width="20dp" android:layout_height="40dp" />
-                    <TextView android:layout_width="88dp" android:layout_height="40dp" android:layout_margin="4dp" android:layout_columnSpan="2" android:background="@drawable/bg_input" android:backgroundTint="#E91E63" android:text="M2" android:textColor="@color/text_primary" android:textStyle="bold" android:gravity="center" android:textSize="11sp"/>
-                    <TextView android:layout_width="88dp" android:layout_height="40dp" android:layout_margin="4dp" android:layout_columnSpan="2" android:background="@drawable/bg_input" android:backgroundTint="#E91E63" android:text="M3" android:textColor="@color/text_primary" android:textStyle="bold" android:gravity="center" android:textSize="11sp"/>
+                    <TextView android:id="@+id/seatM2" android:layout_width="88dp" android:layout_height="40dp" android:layout_margin="4dp" android:layout_columnSpan="2" android:background="@drawable/bg_input" android:backgroundTint="#E91E63" android:text="M2" android:textColor="@color/text_primary" android:textStyle="bold" android:gravity="center" android:textSize="11sp"/>
+                    <TextView android:id="@+id/seatM3" android:layout_width="88dp" android:layout_height="40dp" android:layout_margin="4dp" android:layout_columnSpan="2" android:background="@drawable/bg_input" android:backgroundTint="#E91E63" android:text="M3" android:textColor="@color/text_primary" android:textStyle="bold" android:gravity="center" android:textSize="11sp"/>
                 </GridLayout>
             </HorizontalScrollView>
 
@@ -180,8 +180,22 @@
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent"
             app:layout_constraintBottom_toBottomOf="parent">
-            <TextView android:layout_width="wrap_content" android:layout_height="wrap_content" android:text="Tổng cộng (2 VIP)" android:textColor="@color/text_secondary" android:textSize="13sp" />
-            <TextView android:layout_width="wrap_content" android:layout_height="wrap_content" android:layout_marginTop="2dp" android:text="240.000 VNĐ" android:textColor="@color/neon_cyan" android:textSize="22sp" android:textStyle="bold" />
+            <TextView
+                android:id="@+id/tvSelectedSeatsInfo"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Tổng cộng (0 ghế)"
+                android:textColor="@color/text_secondary"
+                android:textSize="13sp" />
+            <TextView
+                android:id="@+id/tvTotalPrice"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="2dp"
+                android:text="0 VNĐ"
+                android:textColor="@color/neon_cyan"
+                android:textSize="22sp"
+                android:textStyle="bold" />
         </LinearLayout>
 
         <androidx.appcompat.widget.AppCompatButton

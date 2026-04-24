@@ -144,7 +144,7 @@
                         android:layout_height="110dp"
                         android:scaleType="centerCrop"
                         android:src="@drawable/img_bg_login"
-                        app:shapeAppearanceOverlay="@style/circleImageView"
+                        app:shapeAppearanceOverlay="@style/circle_image_view"
                         app:layout_constraintBottom_toBottomOf="parent"
                         app:layout_constraintStart_toStartOf="parent"
                         app:layout_constraintTop_toTopOf="parent" />
@@ -180,7 +180,7 @@
                         android:layout_height="110dp"
                         android:scaleType="centerCrop"
                         android:src="@drawable/img_bg_login"
-                        app:shapeAppearanceOverlay="@style/circleImageView"
+                        app:shapeAppearanceOverlay="@style/circle_image_view"
                         app:layout_constraintBottom_toBottomOf="parent"
                         app:layout_constraintStart_toStartOf="parent"
                         app:layout_constraintTop_toTopOf="parent" />

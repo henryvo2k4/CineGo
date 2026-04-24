@@ -40,6 +40,7 @@
             app:layout_constraintTop_toTopOf="@id/btnBack" />
 
         <TextView
+            android:id="@+id/tvSkip"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="Bỏ qua"
@@ -138,7 +139,7 @@
                     android:layout_height="80dp"
                     android:scaleType="centerCrop"
                     android:src="@drawable/img_bg_login"
-                    app:shapeAppearanceOverlay="@style/circleImageView"
+                    app:shapeAppearanceOverlay="@style/circle_image_view"
                     app:layout_constraintBottom_toBottomOf="parent"
                     app:layout_constraintStart_toStartOf="parent"
                     app:layout_constraintTop_toTopOf="parent"
@@ -214,7 +215,7 @@
                             <TextView
                                 android:layout_width="32dp"
                                 android:layout_height="32dp"
-                                android:background="@drawable/circleImageView"
+                                android:background="@drawable/circle_image_view"
                                 android:backgroundTint="@color/neon_cyan"
                                 android:gravity="center"
                                 android:text="+"
@@ -238,7 +239,7 @@
                     android:layout_height="80dp"
                     android:scaleType="centerCrop"
                     android:src="@drawable/img_bg_login"
-                    app:shapeAppearanceOverlay="@style/circleImageView"
+                    app:shapeAppearanceOverlay="@style/circle_image_view"
                     app:layout_constraintBottom_toBottomOf="parent"
                     app:layout_constraintStart_toStartOf="parent"
                     app:layout_constraintTop_toTopOf="parent" />
@@ -294,7 +295,7 @@
                             <TextView
                                 android:layout_width="32dp"
                                 android:layout_height="32dp"
-                                android:background="@drawable/circleImageView"
+                                android:background="@drawable/circle_image_view"
                                 android:backgroundTint="#33FFFFFF"
                                 android:gravity="center"
                                 android:text="+"
@@ -318,7 +319,7 @@
                     android:layout_height="80dp"
                     android:scaleType="centerCrop"
                     android:src="@drawable/img_bg_login"
-                    app:shapeAppearanceOverlay="@style/circleImageView"
+                    app:shapeAppearanceOverlay="@style/circle_image_view"
                     app:layout_constraintBottom_toBottomOf="parent"
                     app:layout_constraintStart_toStartOf="parent"
                     app:layout_constraintTop_toTopOf="parent" />
@@ -373,7 +374,7 @@
                             <TextView
                                 android:layout_width="32dp"
                                 android:layout_height="32dp"
-                                android:background="@drawable/circleImageView"
+                                android:background="@drawable/circle_image_view"
                                 android:backgroundTint="#33FFFFFF"
                                 android:gravity="center"
                                 android:text="+"

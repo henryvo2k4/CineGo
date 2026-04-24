@@ -83,6 +83,7 @@
 
     <androidx.core.widget.NestedScrollView
         android:layout_width="match_parent"
+        android:id="@+id/scrollViewChat"
         android:layout_height="0dp"
         android:clipToPadding="false"
         android:paddingHorizontal="20dp"
@@ -91,6 +92,7 @@
         app:layout_constraintBottom_toTopOf="@id/layoutBottomInput">
 
         <LinearLayout
+            android:id="@+id/layoutChatContent"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:orientation="vertical"
@@ -194,7 +196,7 @@
                             android:layout_height="85dp"
                             android:scaleType="centerCrop"
                             android:src="@drawable/img_bg_login"
-                            app:shapeAppearanceOverlay="@style/circleImageView"
+                            app:shapeAppearanceOverlay="@style/circle_image_view"
                             app:layout_constraintStart_toStartOf="parent"
                             app:layout_constraintTop_toTopOf="parent"
                             app:layout_constraintBottom_toBottomOf="parent"/>
@@ -290,6 +292,7 @@
                 android:layout_width="0dp"
                 android:layout_weight="1"
                 android:layout_height="48dp"
+                android:id="@+id/edtMessage"
                 android:background="@drawable/bg_input"
                 android:hint="Nhập tin nhắn..."
                 android:textColorHint="@color/text_secondary"
@@ -300,11 +303,11 @@
             <ImageView
                 android:layout_width="48dp"
                 android:layout_height="48dp"
-                android:background="@drawable/circleImageView"
-                android:backgroundTint="@color/neon_cyan"
+                android:id="@+id/btnSend"
+                android:background="@drawable/bg_input"
                 android:padding="12dp"
                 android:src="@android:drawable/ic_menu_send"
-                app:tint="@color/bg_main"
+                app:tint="@color/text_secondary"
                 android:layout_marginStart="12dp"/>
         </LinearLayout>
     </LinearLayout>

@@ -14,7 +14,7 @@
         android:layout_height="100dp"
         android:scaleType="centerCrop"
         android:src="@drawable/img_bg_login"
-        app:shapeAppearanceOverlay="@style/circleImageView"
+        app:shapeAppearanceOverlay="@style/circle_image_view"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
         app:layout_constraintBottom_toBottomOf="parent" />
@@ -44,6 +44,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginTop="4dp"
+            android:id="@+id/tvCinemaName"
             android:text="CineGo Landmark 81"
             android:textColor="@color/text_secondary"
             android:textSize="13sp" />
@@ -52,6 +53,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginTop="2dp"
+            android:id="@+id/tvTime"
             android:text="14 Th 10 • 13:15"
             android:textColor="@color/neon_cyan"
             android:textSize="13sp"
@@ -68,6 +70,7 @@
                 android:layout_width="0dp"
                 android:layout_weight="1"
                 android:layout_height="wrap_content"
+                android:id="@+id/tvSeatInfo"
                 android:text="Ghế: M1, M2"
                 android:textColor="@color/text_secondary"
                 android:textSize="12sp" />

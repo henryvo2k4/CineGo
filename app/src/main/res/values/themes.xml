@@ -8,7 +8,7 @@
         <item name="android:statusBarColor">@color/bg_main</item>
     </style>
 
-    <style name="circleImageView" parent="ShapeAppearance.MaterialComponents.SmallComponent">
+    <style name="circle_image_view" parent="ShapeAppearance.MaterialComponents.SmallComponent">
         <item name="cornerFamily">rounded</item>
         <item name="cornerSize">50%</item>
     </style>

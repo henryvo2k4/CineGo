@@ -41,7 +41,7 @@
                 android:layout_width="64dp"
                 android:layout_height="64dp"
                 android:src="@android:drawable/ic_media_play"
-                android:background="@drawable/circleImageView"
+                android:background="@drawable/circle_image_view"
                 android:backgroundTint="#80000000"
                 app:tint="@color/neon_cyan"
                 android:padding="16dp"
@@ -200,7 +200,7 @@
                             android:layout_height="60dp"
                             android:src="@drawable/img_bg_login"
                             android:scaleType="centerCrop"
-                            android:background="@drawable/circleImageView" />
+                            android:background="@drawable/circle_image_view" />
                         <TextView
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
@@ -220,7 +220,7 @@
                             android:layout_height="60dp"
                             android:src="@drawable/img_bg_login"
                             android:scaleType="centerCrop"
-                            android:background="@drawable/circleImageView" />
+                            android:background="@drawable/circle_image_view" />
                         <TextView
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"

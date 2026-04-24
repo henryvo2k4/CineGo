@@ -41,16 +41,16 @@
                         android:layout_height="match_parent"
                         android:scaleType="centerCrop"
                         android:src="@drawable/img_avt"
-                        app:shapeAppearanceOverlay="@style/circleImageView"
+                        app:shapeAppearanceOverlay="@style/circle_image_view"
                         android:padding="2dp"
-                        android:strokeWidth="2dp"
-                        android:strokeColor="@color/neon_cyan" />
+                        app:strokeWidth="2dp"
+                        app:strokeColor="@color/neon_cyan" />
 
                     <ImageView
                         android:layout_width="36dp"
                         android:layout_height="36dp"
                         android:layout_gravity="bottom|end"
-                        android:background="@drawable/circleImageView"
+                        android:background="@drawable/circle_image_view"
                         android:backgroundTint="@color/neon_cyan"
                         android:padding="8dp"
                         android:src="@android:drawable/ic_menu_camera"
@@ -284,7 +284,7 @@
                 android:layout_width="match_parent"
                 android:layout_height="55dp"
                 android:layout_marginTop="32dp"
-                android:layout_marginBottom="90dp"
+                android:layout_marginBottom="10dp"
                 android:background="@drawable/bg_input"
                 android:backgroundTint="#2DEF4444"
                 android:text="Đăng xuất"
@@ -295,18 +295,5 @@
 
         </LinearLayout>
     </androidx.core.widget.NestedScrollView>
-    <com.google.android.material.bottomnavigation.BottomNavigationView
-        android:id="@+id/bottomNavigation"
-        android:layout_width="match_parent"
-        android:layout_height="70dp"
-        android:background="#1A1B22"
-        app:itemIconTint="@color/nav_item_colors"
-        app:itemTextColor="@color/nav_item_colors"
-        app:labelVisibilityMode="labeled"
-        app:menu="@menu/menu_bottom_nav"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:elevation="24dp" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>

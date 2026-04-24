@@ -1,6 +1,7 @@
 plugins {
     alias(libs.plugins.android.application)
     alias(libs.plugins.kotlin.compose)
+    id("com.google.gms.google-services")
 }
 
 android {
@@ -41,6 +42,16 @@ dependencies {
     implementation(libs.activity)
     implementation(libs.constraintlayout)
 
+    implementation("com.google.firebase:firebase-auth")
+    implementation("com.google.firebase:firebase-database")
+
+    // Thư viện tải ảnh Glide
+    implementation("com.github.bumptech.glide:glide:4.16.0")
+
+    implementation(platform("com.google.firebase:firebase-bom:34.12.0"))
+
+    implementation("com.google.firebase:firebase-analytics")
+
     // 1. Glide: Load ảnh (poster, avatar) cực kỳ mượt và ổn định.
     // Hỗ trợ sẵn việc làm mờ ảnh (Blur) nếu cần.
     implementation("com.github.bumptech.glide:glide:5.0.7")
@@ -60,6 +71,9 @@ dependencies {
     implementation(libs.ui.graphics)
     implementation(libs.ui.tooling.preview)
     implementation(libs.material3)
+
+
+    implementation("com.squareup.okhttp3:okhttp:4.12.0")
 
     testImplementation(libs.junit)
     androidTestImplementation(libs.ext.junit)

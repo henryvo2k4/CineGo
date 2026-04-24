@@ -81,7 +81,7 @@
                     android:layout_height="96dp"
                     android:scaleType="centerCrop"
                     android:src="@drawable/img_bg_login"
-                    app:shapeAppearanceOverlay="@style/circleImageView" />
+                    app:shapeAppearanceOverlay="@style/circle_image_view" />
 
                 <LinearLayout
                     android:layout_width="0dp"
