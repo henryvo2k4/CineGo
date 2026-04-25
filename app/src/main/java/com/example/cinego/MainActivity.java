@@ -2,16 +2,28 @@ package com.example.cinego;
 
 import android.content.Intent;
 import android.os.Bundle;
+import android.os.Handler;
+import android.os.Looper;
 import android.view.View;
 import android.widget.ImageView;
+import android.widget.Toast;
 
+import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
+import androidx.viewpager2.widget.ViewPager2;
+
 import com.google.android.material.bottomnavigation.BottomNavigationView;
 import com.google.android.material.imageview.ShapeableImageView;
+import com.google.firebase.database.DataSnapshot;
+import com.google.firebase.database.DatabaseError;
+import com.google.firebase.database.DatabaseReference;
+import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.database.ValueEventListener;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 
 public class MainActivity extends AppCompatActivity {
@@ -19,7 +31,10 @@ public class MainActivity extends AppCompatActivity {
     private RecyclerView rvAiSuggested, rvNowPlaying, rvHotMovies, rvUpcomingMovies;
     private ShapeableImageView imgAvatar;
     private ImageView imgSearch;
-    private MovieAdapter movieAdapter;
+
+    // --- KHAI BÁO CHO BANNER ---
+    private ViewPager2 vpBanners;
+    private Handler sliderHandler = new Handler(Looper.getMainLooper());
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -38,14 +53,11 @@ public class MainActivity extends AppCompatActivity {
             startActivity(new Intent(MainActivity.this, SearchActivity.class));
         });
 
-        // 3. (Tạm thời) Tạo dữ liệu giả. Sau này sẽ thay bằng hàm tải từ Firebase + AI
-        List<Movie> movieList = createDummyMovies();
+        // 3. Gọi hàm tải dữ liệu thật từ Firebase thay vì dùng dữ liệu giả
+        fetchMoviesFromFirebase();
 
-        // 4. Cài đặt Adapter cho các thanh cuộn
-        setupRecyclerView(rvAiSuggested, movieList);
-        setupRecyclerView(rvNowPlaying, movieList);
-        setupRecyclerView(rvHotMovies, movieList);
-        setupRecyclerView(rvUpcomingMovies, movieList);
+        // 4. Cài đặt Banner tự động trượt
+        setupBanners();
 
         // 5. Xử lý thanh Bottom Navigation
         setupBottomNavigation();
@@ -56,19 +68,106 @@ public class MainActivity extends AppCompatActivity {
         rvNowPlaying = findViewById(R.id.rvNowPlaying);
         rvHotMovies = findViewById(R.id.rvHotMovies);
         rvUpcomingMovies = findViewById(R.id.rvUpcomingMovies);
-
-        // Ánh xạ Avatar và Nút Search từ activity_main.xml
         imgAvatar = findViewById(R.id.imgAvatar);
         imgSearch = findViewById(R.id.imgSearch);
+
+        // Ánh xạ ViewPager2
+        vpBanners = findViewById(R.id.vpBanners);
     }
 
-    private List<Movie> createDummyMovies() {
-        List<Movie> list = new ArrayList<>();
-        list.add(new Movie("Avatar: Dòng Chảy Của Nước", "https://m.media-amazon.com/images/M/MV5BYjhiNjBlODctY2ZiOC00YjVlLWFlNzAtNTVhNzM1YjI1NzMxXkEyXkFqcGdeQXVyMjQxNTE1MDA@._V1_FMjpg_UX1000_.jpg", 8.5, "Viễn tưởng"));
-        list.add(new Movie("Lật Mặt 6: Tấm Vé Định Mệnh", "https://upload.wikimedia.org/wikipedia/vi/a/a2/L%E1%BA%ADt_m%E1%BA%B7t_6_-_T%E1%BA%A5m_v%C3%A9_%C4%91%E1%BB%8Bnh_m%E1%BB%87nh_poster.jpg", 7.8, "Hành động"));
-        list.add(new Movie("Doraemon: Khủng Long Nobita", "https://m.media-amazon.com/images/M/MV5BNzQ4Yjc5MDMtNWRkOS00YWE0LWFkNzEtZmU1YWMyZmIxZTU4XkEyXkFqcGdeQXVyMjg0MTI5NzQ@._V1_.jpg", 9.0, "Hoạt hình"));
-        return list;
+    // ==========================================
+    // LOGIC TẢI DỮ LIỆU TỪ FIREBASE
+    // ==========================================
+    private void fetchMoviesFromFirebase() {
+        DatabaseReference dbRef = FirebaseDatabase.getInstance("https://cinego-7aed8-default-rtdb.asia-southeast1.firebasedatabase.app").getReference("movies");
+
+        dbRef.addValueEventListener(new ValueEventListener() {
+            @Override
+            public void onDataChange(@NonNull DataSnapshot snapshot) {
+                List<Movie> movieList = new ArrayList<>();
+
+                // Lặp qua tất cả 30 phim trên Firebase
+                for (DataSnapshot postSnapshot : snapshot.getChildren()) {
+                    Movie movie = postSnapshot.getValue(Movie.class);
+                    if (movie != null) {
+                        // RẤT QUAN TRỌNG: Gán cái Key (phim1, phim2...) vào ID của Movie
+                        // để khi click vào, nó biết đường truyền sang MovieDetailActivity
+                        movie.setId(postSnapshot.getKey());
+                        movieList.add(movie);
+                        System.out.println("CINEGO_DEBUG: Đã tải được phim -> " + movie.getTitle());
+                    }
+                }
+
+                // Cài đặt Adapter cho các thanh cuộn với danh sách phim vừa tải về
+                // (Tạm thời mình nhét chung 1 list, bạn có thể tách list ra theo thể loại sau này)
+                setupRecyclerView(rvAiSuggested, movieList);
+
+                // Đảo lộn danh sách một chút cho các mục khác nhau nhìn cho đa dạng
+                List<Movie> list2 = new ArrayList<>(movieList); Collections.shuffle(list2);
+                setupRecyclerView(rvNowPlaying, list2);
+
+                List<Movie> list3 = new ArrayList<>(movieList); Collections.shuffle(list3);
+                setupRecyclerView(rvHotMovies, list3);
+
+                List<Movie> list4 = new ArrayList<>(movieList); Collections.shuffle(list4);
+                setupRecyclerView(rvUpcomingMovies, list4);
+            }
+
+            @Override
+            public void onCancelled(@NonNull DatabaseError error) {
+                Toast.makeText(MainActivity.this, "Lỗi tải phim: " + error.getMessage(), Toast.LENGTH_SHORT).show();
+            }
+        });
     }
+
+    // ==========================================
+    // LOGIC CÀI ĐẶT BANNER TỰ ĐỘNG TRƯỢT
+    // ==========================================
+    private void setupBanners() {
+        List<Integer> bannerList = new ArrayList<>();
+        bannerList.add(R.drawable.img_banner_01);
+        bannerList.add(R.drawable.img_banner_02);
+        bannerList.add(R.drawable.img_banner_03);
+        bannerList.add(R.drawable.img_banner_04);
+        bannerList.add(R.drawable.img_banner_05);
+        bannerList.add(R.drawable.img_banner_06);
+
+        BannerAdapter bannerAdapter = new BannerAdapter(bannerList);
+        vpBanners.setAdapter(bannerAdapter);
+
+        // Đặt vị trí ban đầu ở giữa dãy số vô tận
+        vpBanners.setCurrentItem(bannerList.size() * 1000, false);
+
+        vpBanners.registerOnPageChangeCallback(new ViewPager2.OnPageChangeCallback() {
+            @Override
+            public void onPageSelected(int position) {
+                super.onPageSelected(position);
+                sliderHandler.removeCallbacks(sliderRunnable);
+                // Đã đồng bộ thời gian trượt là 3 giây (3000ms) cho mượt mà
+                sliderHandler.postDelayed(sliderRunnable, 3000);
+            }
+        });
+    }
+
+    private Runnable sliderRunnable = new Runnable() {
+        @Override
+        public void run() {
+            vpBanners.setCurrentItem(vpBanners.getCurrentItem() + 1);
+        }
+    };
+
+    @Override
+    protected void onPause() {
+        super.onPause();
+        sliderHandler.removeCallbacks(sliderRunnable);
+    }
+
+    @Override
+    protected void onResume() {
+        super.onResume();
+        sliderHandler.postDelayed(sliderRunnable, 3000); // Đồng bộ 3s
+    }
+    // ==========================================
 
     private void setupRecyclerView(RecyclerView recyclerView, List<Movie> list) {
         LinearLayoutManager layoutManager = new LinearLayoutManager(this, LinearLayoutManager.HORIZONTAL, false);
@@ -98,8 +197,7 @@ public class MainActivity extends AppCompatActivity {
                 overridePendingTransition(0, 0);
                 return true;
             } else if (itemId == R.id.nav_tickets) {
-                // Sửa lại thành nhảy sang trang Profile nếu "Vé của tôi" gộp chung
-                startActivity(new Intent(getApplicationContext(), ProfileActivity.class));
+                startActivity(new Intent(getApplicationContext(), MyTicketsActivity.class));
                 overridePendingTransition(0, 0);
                 return true;
             }

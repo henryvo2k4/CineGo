@@ -90,18 +90,17 @@
             android:orientation="vertical"
             android:paddingTop="16dp">
 
-            <androidx.viewpager2.widget.ViewPager2
+            <FrameLayout
+                android:layout_width="match_parent"
+                android:layout_height="160dp"
+                android:layout_marginHorizontal="20dp"
+                android:layout_marginTop="16dp"
+                android:background="@drawable/bg_card_3d"
+                android:padding="8dp"> <androidx.viewpager2.widget.ViewPager2
                 android:id="@+id/vpBanners"
                 android:layout_width="match_parent"
-                android:layout_height="100dp"
-                android:paddingHorizontal="40dp" />
-
-            <View
-                android:layout_width="260dp"
-                android:layout_height="100dp"
-                android:layout_gravity="center_horizontal"
-                android:layout_marginTop="-100dp"
-                android:background="@drawable/bg_card_3d" />
+                android:layout_height="match_parent" />
+            </FrameLayout>
 
             <LinearLayout
                 android:layout_width="match_parent"
@@ -130,28 +129,30 @@
                 android:orientation="horizontal"
                 app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
                 tools:listitem="@layout/item_movie"
-                tools:itemCount="5" /> <LinearLayout
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="28dp"
-            android:paddingHorizontal="20dp"
-            android:orientation="horizontal"
-            android:gravity="center_vertical">
-            <TextView
-                android:layout_width="0dp"
-                android:layout_weight="1"
+                tools:itemCount="5" />
+
+            <LinearLayout
+                android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:text="Phim đang chiếu"
-                android:textColor="@color/text_primary"
-                android:textSize="20sp"
-                android:textStyle="bold" />
-            <TextView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="Xem tất cả"
-                android:textColor="@color/text_secondary"
-                android:textSize="13sp" />
-        </LinearLayout>
+                android:layout_marginTop="28dp"
+                android:paddingHorizontal="20dp"
+                android:orientation="horizontal"
+                android:gravity="center_vertical">
+                <TextView
+                    android:layout_width="0dp"
+                    android:layout_weight="1"
+                    android:layout_height="wrap_content"
+                    android:text="Phim đang chiếu"
+                    android:textColor="@color/text_primary"
+                    android:textSize="20sp"
+                    android:textStyle="bold" />
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="Xem tất cả"
+                    android:textColor="@color/text_secondary"
+                    android:textSize="13sp" />
+            </LinearLayout>
 
             <androidx.recyclerview.widget.RecyclerView
                 android:id="@+id/rvNowPlaying"

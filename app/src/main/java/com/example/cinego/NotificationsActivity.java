@@ -44,7 +44,7 @@ public class NotificationsActivity extends AppCompatActivity {
             });
         }
 
-        // 4. Xử lý thanh Menu Bottom Navigation (Nếu có)
+        // 4. Xử lý thanh Menu Bottom Navigation
         setupBottomNavigation();
     }
 
@@ -72,7 +72,8 @@ public class NotificationsActivity extends AppCompatActivity {
                 } else if (itemId == R.id.nav_notifications) {
                     return true; // Đang ở trang hiện tại
                 } else if (itemId == R.id.nav_tickets) {
-                    startActivity(new Intent(getApplicationContext(), ProfileActivity.class));
+                    // SỬA Ở ĐÂY: Trỏ đúng về trang MyTicketsActivity thay vì ProfileActivity
+                    startActivity(new Intent(getApplicationContext(), MyTicketsActivity.class));
                     overridePendingTransition(0, 0);
                     return true;
                 }

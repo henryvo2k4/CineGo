@@ -2,64 +2,81 @@ package com.example.cinego;
 
 import android.content.Intent;
 import android.os.Bundle;
+import android.widget.Toast;
 
+import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.recyclerview.widget.GridLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.google.android.material.bottomnavigation.BottomNavigationView;
+import com.google.firebase.database.DataSnapshot;
+import com.google.firebase.database.DatabaseError;
+import com.google.firebase.database.DatabaseReference;
+import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.database.ValueEventListener;
 
 import java.util.ArrayList;
 import java.util.List;
 
 public class MoviesActivity extends AppCompatActivity {
 
-    // Khai báo RecyclerView để hiển thị danh sách
     private RecyclerView rvMovies;
     private MovieAdapter movieAdapter;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        // Nạp file giao diện tương ứng (Giả định bạn đặt tên là activity_movies.xml)
         setContentView(R.layout.activity_movies);
 
-        // 1. Ánh xạ View (Đã cập nhật ID khớp với file XML là rvAllMovies)
+        // 1. Ánh xạ View
         rvMovies = findViewById(R.id.rvAllMovies);
 
-        // 2. Thiết lập hiển thị danh sách
+        // 2. Kéo dữ liệu từ Firebase về thay vì dùng dữ liệu giả
         if (rvMovies != null) {
-            setupRecyclerView();
+            fetchMoviesFromFirebase();
         }
 
         // 3. Xử lý thanh Menu Bottom Navigation
         setupBottomNavigation();
     }
 
-    private void setupRecyclerView() {
-        // Tạo dữ liệu giả lập (Lần này tạo nhiều phim hơn để xem cuộn dọc)
-        List<Movie> list = new ArrayList<>();
-        list.add(new Movie("Avatar: Dòng Chảy Của Nước", R.drawable.img_bg_login, 8.5, "Viễn tưởng"));
-        list.add(new Movie("Lật Mặt 6: Tấm Vé Định Mệnh", R.drawable.img_bg_login, 7.8, "Hành động"));
-        list.add(new Movie("Doraemon: Khủng Long Nobita", R.drawable.img_bg_login, 9.0, "Hoạt hình"));
-        list.add(new Movie("Quỷ Ám: Tín Đồ", R.drawable.img_bg_login, 6.5, "Kinh dị"));
-        list.add(new Movie("Avengers: Endgame", R.drawable.img_bg_login, 8.9, "Hành động"));
-        list.add(new Movie("Nhà Bà Nữ", R.drawable.img_bg_login, 7.2, "Tâm lý"));
-        list.add(new Movie("Spider-Man: No Way Home", R.drawable.img_bg_login, 8.8, "Hành động"));
-        list.add(new Movie("Oppenheimer", R.drawable.img_bg_login, 8.6, "Tiểu sử"));
+    private void fetchMoviesFromFirebase() {
+        DatabaseReference dbRef = FirebaseDatabase.getInstance("https://cinego-7aed8-default-rtdb.asia-southeast1.firebasedatabase.app").getReference("movies");
 
-        // Dùng GridLayoutManager để chia danh sách thành một "lưới" gồm 2 cột
-        rvMovies.setLayoutManager(new GridLayoutManager(this, 2));
+        dbRef.addValueEventListener(new ValueEventListener() {
+            @Override
+            public void onDataChange(@NonNull DataSnapshot snapshot) {
+                List<Movie> list = new ArrayList<>();
 
-        // Tái sử dụng lại Adapter đã tạo từ bài Trang chủ
-        movieAdapter = new MovieAdapter(this, list);
-        rvMovies.setAdapter(movieAdapter);
+                // Lấy toàn bộ danh sách phim từ Database
+                for (DataSnapshot postSnapshot : snapshot.getChildren()) {
+                    Movie movie = postSnapshot.getValue(Movie.class);
+                    if (movie != null) {
+                        // Bắt buộc: Gắn Key (ID) để khi bấm vào phim, trang Chi tiết mới biết là phim nào
+                        movie.setId(postSnapshot.getKey());
+                        list.add(movie);
+                    }
+                }
+
+                // Dùng GridLayoutManager để chia danh sách thành một "lưới" gồm 2 cột
+                rvMovies.setLayoutManager(new GridLayoutManager(MoviesActivity.this, 2));
+
+                // Tái sử dụng lại Adapter đã tạo từ bài Trang chủ
+                movieAdapter = new MovieAdapter(MoviesActivity.this, list);
+                rvMovies.setAdapter(movieAdapter);
+            }
+
+            @Override
+            public void onCancelled(@NonNull DatabaseError error) {
+                Toast.makeText(MoviesActivity.this, "Lỗi tải dữ liệu: " + error.getMessage(), Toast.LENGTH_SHORT).show();
+            }
+        });
     }
 
     private void setupBottomNavigation() {
         BottomNavigationView bottomNavigationView = findViewById(R.id.bottomNavigation);
         if (bottomNavigationView != null) {
-            // Cập nhật trạng thái icon: Đặt sáng icon "Phim"
             bottomNavigationView.setSelectedItemId(R.id.nav_movies);
 
             bottomNavigationView.setOnItemSelectedListener(item -> {
@@ -69,18 +86,17 @@ public class MoviesActivity extends AppCompatActivity {
                     overridePendingTransition(0, 0);
                     return true;
                 } else if (itemId == R.id.nav_movies) {
-                    return true; // Đang ở trang hiện tại, không làm gì cả
+                    return true; // Đang ở trang hiện tại
                 } else if (itemId == R.id.nav_ai_chat) {
                     startActivity(new Intent(getApplicationContext(), AiChatActivity.class));
                     overridePendingTransition(0, 0);
                     return true;
                 } else if (itemId == R.id.nav_notifications) {
-                    // Chờ code file NotificationsActivity
-                    // startActivity(new Intent(getApplicationContext(), NotificationsActivity.class));
-                    // overridePendingTransition(0, 0);
+                    startActivity(new Intent(getApplicationContext(), NotificationsActivity.class));
+                    overridePendingTransition(0, 0);
                     return true;
                 } else if (itemId == R.id.nav_tickets) {
-                    startActivity(new Intent(getApplicationContext(), ProfileActivity.class));
+                    startActivity(new Intent(getApplicationContext(), MyTicketsActivity.class));
                     overridePendingTransition(0, 0);
                     return true;
                 }
