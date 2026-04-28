@@ -36,7 +36,7 @@ public class AiChatActivity extends AppCompatActivity {
     private NestedScrollView scrollViewChat;
 
     // 🔴 QUAN TRỌNG: BẠN HÃY DÁN API KEY CỦA BẠN VÀO ĐÂY NHÉ
-    private static final String GEMINI_API_KEY = "AIzaSyBhgMqHO1vuasH2s84j4L8zVuYnBHZjFlc";
+    private static final String GEMINI_API_KEY = "API";
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
