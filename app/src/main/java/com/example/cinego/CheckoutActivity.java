@@ -7,8 +7,11 @@ import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
+
 import androidx.appcompat.app.AppCompatActivity;
+
 import com.bumptech.glide.Glide;
+
 import java.util.ArrayList;
 
 import com.google.firebase.database.DatabaseReference;
@@ -47,18 +50,16 @@ public class CheckoutActivity extends AppCompatActivity {
         });
 
         // Xác nhận thanh toán
+
         findViewById(R.id.btnConfirmPayment).setOnClickListener(v -> {
-            // 1. Kết nối tới Firebase
+            // 1. Kết nối Firebase để lưu vé
             DatabaseReference dbRef = FirebaseDatabase.getInstance("https://cinego-7aed8-default-rtdb.asia-southeast1.firebasedatabase.app")
                     .getReference("booked_tickets");
 
-            // 2. Tạo một ID duy nhất cho vé này
             String ticketId = dbRef.push().getKey();
-
-            // 3. Lấy dữ liệu từ giao diện để đóng gói (Dùng các biến bạn đã nạp data lúc nãy)
-            // Lưu ý: Lấy lại link poster từ Intent để lưu vào vé
             String posterUrl = getIntent().getStringExtra("posterUrl");
 
+            // Tạo đối tượng vé để lưu
             Ticket ticket = new Ticket(
                     ticketId,
                     tvMovieName.getText().toString(),
@@ -68,18 +69,56 @@ public class CheckoutActivity extends AppCompatActivity {
                     tvSnacksName.getText().toString(),
                     tvFinalTotal.getText().toString(),
                     posterUrl,
-                    System.currentTimeMillis() // Lưu thời gian hiện tại để biết vé mới hay cũ
+                    System.currentTimeMillis()
             );
 
-            // 4. Đẩy dữ liệu lên Firebase
             if (ticketId != null) {
                 dbRef.child(ticketId).setValue(ticket).addOnSuccessListener(aVoid -> {
-                    // Chỉ khi lưu xong mới báo thành công và chuyển trang
+
+                    // --- 2. TỰ ĐỘNG TẠO THÔNG BÁO HỆ THỐNG ---
+                    DatabaseReference notiRef = FirebaseDatabase.getInstance("https://cinego-7aed8-default-rtdb.asia-southeast1.firebasedatabase.app")
+                            .getReference("notifications");
+
+                    String notiId = notiRef.push().getKey();
+                    if (notiId != null) {
+                        Notification bookingNoti = new Notification(
+                                notiId,
+                                "Đặt vé thành công! 🎉",
+                                "Bạn đã đặt thành công vé phim " + tvMovieName.getText().toString() + ". Xem chi tiết tại mục Vé của tôi nhé!",
+                                "SYSTEM",
+                                System.currentTimeMillis(),
+                                false
+                        );
+                        notiRef.child(notiId).setValue(bookingNoti);
+                    }
+
+                    // --- 3. HIỂN THỊ THÀNH CÔNG VÀ CHUYỂN SANG MÀN HÌNH VÉ (TICKET ACTIVITY) ---
                     Toast.makeText(this, "Thanh toán thành công qua " + selectedMethod, Toast.LENGTH_LONG).show();
 
-                    Intent intent = new Intent(this, MainActivity.class);
-                    intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP); // Xóa các màn hình cũ cho nhẹ máy
+                    Intent intent = new Intent(this, TicketActivity.class);
+
+                    // Truyền toàn bộ thông tin sang để hiện lên cái vé điện tử
+                    intent.putExtra("movieName", tvMovieName.getText().toString());
+                    intent.putExtra("selectedCinema", tvCinema.getText().toString());
+
+                    // Tách Ngày và Giờ từ chuỗi "Ngày • Giờ" để hiển thị cho đẹp
+                    String fullDateTime = tvDateTime.getText().toString();
+                    if (fullDateTime.contains(" • ")) {
+                        intent.putExtra("selectedDate", fullDateTime.split(" • ")[0]);
+                        intent.putExtra("selectedTime", fullDateTime.split(" • ")[1]);
+                    } else {
+                        intent.putExtra("selectedDate", fullDateTime);
+                        intent.putExtra("selectedTime", "");
+                    }
+
+                    intent.putExtra("seats", tvSeats.getText().toString());
+                    intent.putExtra("snackDetails", tvSnacksName.getText().toString());
+                    intent.putExtra("posterUrl", posterUrl);
+                    intent.putExtra("ticketId", ticketId); // Để hiện mã vé TKT-XXXX
+
                     startActivity(intent);
+                    finish(); // Đóng màn hình thanh toán lại
+
                 }).addOnFailureListener(e -> {
                     Toast.makeText(this, "Lỗi lưu vé: " + e.getMessage(), Toast.LENGTH_SHORT).show();
                 });

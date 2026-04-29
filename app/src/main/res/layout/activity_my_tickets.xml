@@ -59,6 +59,42 @@
         android:paddingHorizontal="20dp"
         app:layout_constraintBottom_toTopOf="@id/bottomNavigation"
         app:layout_constraintTop_toBottomOf="@id/layoutTabs" />
+    <!-- MÀN HÌNH TRỐNG CHO VÉ -->
+    <LinearLayout
+        android:id="@+id/layoutEmptyTickets"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:gravity="center"
+        android:orientation="vertical"
+        android:visibility="gone"
+        app:layout_constraintBottom_toTopOf="@id/bottomNavigation"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/layoutTabs">
+
+        <ImageView
+            android:layout_width="150dp"
+            android:layout_height="150dp"
+            android:alpha="0.5"
+            android:src="@android:drawable/ic_menu_today"
+            app:tint="@color/text_secondary" />
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="16dp"
+            android:text="Bạn chưa có vé nào"
+            android:textColor="@color/text_secondary"
+            android:textSize="16sp" />
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="8dp"
+            android:text="Hãy đặt vé để tận hưởng điện ảnh nhé!"
+            android:textColor="#4DFFFFFF"
+            android:textSize="13sp" />
+    </LinearLayout>
 
     <com.google.android.material.bottomnavigation.BottomNavigationView
         android:id="@+id/bottomNavigation"
@@ -67,7 +103,8 @@
         android:background="#1A1B22"
         app:itemIconTint="@color/nav_item_colors"
         app:itemTextColor="@color/nav_item_colors"
-        app:menu="@menu/menu_bottom_nav"
-        app:layout_constraintBottom_toBottomOf="parent" />
+        app:labelVisibilityMode="labeled"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:menu="@menu/menu_bottom_nav" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>

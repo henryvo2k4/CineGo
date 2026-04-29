@@ -107,8 +107,20 @@ public class MyTicketsActivity extends AppCompatActivity {
     }
 
     private void updateRecyclerView(List<Ticket> list) {
-        ticketAdapter = new TicketAdapter(this, list);
-        rvTickets.setAdapter(ticketAdapter);
+        View layoutEmpty = findViewById(R.id.layoutEmptyTickets);
+
+        if (list == null || list.isEmpty()) {
+            // Nếu không có vé: Hiện màn hình trống, ẩn danh sách
+            rvTickets.setVisibility(View.GONE);
+            layoutEmpty.setVisibility(View.VISIBLE);
+        } else {
+            // Nếu có vé: Hiện danh sách, ẩn màn hình trống
+            rvTickets.setVisibility(View.VISIBLE);
+            layoutEmpty.setVisibility(View.GONE);
+
+            ticketAdapter = new TicketAdapter(this, list);
+            rvTickets.setAdapter(ticketAdapter);
+        }
     }
 
     private void setupTabsLogic() {

@@ -47,6 +47,8 @@ dependencies {
     // Thư viện hỗ trợ lập trình bất đồng bộ
     implementation("com.google.guava:guava:31.1-android")
 
+    implementation("com.google.firebase:firebase-auth:22.3.1")
+
     implementation("com.google.firebase:firebase-auth")
     implementation("com.google.firebase:firebase-database")
 

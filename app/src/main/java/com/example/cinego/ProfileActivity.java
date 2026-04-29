@@ -2,84 +2,87 @@ package com.example.cinego;
 
 import android.content.Intent;
 import android.os.Bundle;
-import android.view.View;
+import android.widget.TextView;
 import android.widget.Toast;
 
+import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.AppCompatButton;
 
-import com.google.android.material.bottomnavigation.BottomNavigationView;
+import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.auth.FirebaseUser;
+import com.google.firebase.database.DataSnapshot;
+import com.google.firebase.database.DatabaseError;
+import com.google.firebase.database.DatabaseReference;
+import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.database.ValueEventListener;
 
 public class ProfileActivity extends AppCompatActivity {
 
+    private TextView tvName, tvEmail, tvDob;
     private AppCompatButton btnLogout;
+    private FirebaseAuth mAuth;
+    private DatabaseReference dbRef;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        // Nạp giao diện từ file activity_profile.xml
         setContentView(R.layout.activity_profile);
 
-        // 1. Ánh xạ View chính xác theo ID trong XML
-        btnLogout = findViewById(R.id.btnLogout);
+        // 1. Khởi tạo Firebase
+        mAuth = FirebaseAuth.getInstance();
+        FirebaseUser currentUser = mAuth.getCurrentUser();
 
-        // 2. Xử lý sự kiện khi bấm nút "Đăng xuất"
-        btnLogout.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                // (Trong thực tế, ở đây sẽ có code xóa SharedPreferences hoặc đăng xuất Firebase)
+        if (currentUser != null) {
+            dbRef = FirebaseDatabase.getInstance("https://cinego-7aed8-default-rtdb.asia-southeast1.firebasedatabase.app")
+                    .getReference("users").child(currentUser.getUid());
+        }
 
-                Toast.makeText(ProfileActivity.this, "Hẹn gặp lại bạn nhé!", Toast.LENGTH_SHORT).show();
+        anhXaView();
+        loadUserInfo();
 
-                // Chuyển người dùng về màn hình Đăng nhập (LoginActivity)
-                Intent intent = new Intent(ProfileActivity.this, LoginActivity.class);
+        // 2. Xử lý nút Đăng xuất
+        btnLogout.setOnClickListener(v -> {
+            mAuth.signOut(); // Lệnh đăng xuất của Firebase
+            Toast.makeText(this, "Đã đăng xuất!", Toast.LENGTH_SHORT).show();
 
-                // FLAG_ACTIVITY_NEW_TASK và CLEAR_TASK:
-                // Xóa sổ toàn bộ các màn hình trước đó (Home, Chat, Profile...) khỏi bộ nhớ.
-                // Giúp người dùng không thể bấm phím Back trên điện thoại để lọt vào lại app.
-                intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
-
-                startActivity(intent);
-                finish(); // Đóng Activity hiện tại
-            }
+            // Quay lại màn hình Login và xóa lịch sử các trang trước
+            Intent intent = new Intent(ProfileActivity.this, LoginActivity.class);
+            intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
+            startActivity(intent);
+            finish();
         });
-
-        // 3. Xử lý thanh điều hướng Bottom Navigation
-        setupBottomNavigation();
     }
 
-    private void setupBottomNavigation() {
-        BottomNavigationView bottomNavigationView = findViewById(R.id.bottomNavigation);
-        if (bottomNavigationView != null) {
-            // Đặt sáng icon tương ứng (Tạm dùng nav_tickets cho tab Profile cuối cùng)
-            bottomNavigationView.setSelectedItemId(R.id.nav_tickets);
+    private void anhXaView() {
+        tvName = findViewById(R.id.tvUserName);
+        tvEmail = findViewById(R.id.tvEmail);
+        tvDob = findViewById(R.id.tvDob);
+        btnLogout = findViewById(R.id.btnLogout);
+    }
 
-            bottomNavigationView.setOnItemSelectedListener(item -> {
-                int itemId = item.getItemId();
-                if (itemId == R.id.nav_home) {
-                    startActivity(new Intent(getApplicationContext(), MainActivity.class));
-                    overridePendingTransition(0, 0);
-                    return true;
-                } else if (itemId == R.id.nav_movies) {
-                    // Chờ code file MoviesActivity
-                    // startActivity(new Intent(getApplicationContext(), MoviesActivity.class));
-                    // overridePendingTransition(0, 0);
-                    return true;
-                } else if (itemId == R.id.nav_ai_chat) {
-                    startActivity(new Intent(getApplicationContext(), AiChatActivity.class));
-                    overridePendingTransition(0, 0);
-                    return true;
-                } else if (itemId == R.id.nav_notifications) {
-                    // Chờ code file NotificationsActivity
-                    // startActivity(new Intent(getApplicationContext(), NotificationsActivity.class));
-                    // overridePendingTransition(0, 0);
-                    return true;
-                } else if (itemId == R.id.nav_tickets) {
-                    // Đang ở trang hiện tại rồi thì không làm gì cả
-                    return true;
+    private void loadUserInfo() {
+        if (dbRef == null) return;
+
+        // Lấy dữ liệu thật từ Firebase Realtime Database
+        dbRef.addValueEventListener(new ValueEventListener() {
+            @Override
+            public void onDataChange(@NonNull DataSnapshot snapshot) {
+                if (snapshot.exists()) {
+                    // Dùng Class User mà bạn đã tạo lúc làm trang Đăng ký
+                    User user = snapshot.getValue(User.class);
+                    if (user != null) {
+                        tvName.setText(user.getFullName());
+                        tvEmail.setText("📧 " + user.getEmail());
+                        tvDob.setText("📅 " + user.getDob());
+                    }
                 }
-                return false;
-            });
-        }
+            }
+
+            @Override
+            public void onCancelled(@NonNull DatabaseError error) {
+                Toast.makeText(ProfileActivity.this, "Không thể tải thông tin!", Toast.LENGTH_SHORT).show();
+            }
+        });
     }
 }

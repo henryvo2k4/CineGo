@@ -4,12 +4,11 @@ public class User {
     private String fullName;
     private String email;
     private String phone;
-    private String dob; // Ngày sinh (Day/Month/Year)
-    private String role; // "user" hoặc "admin"
+    private String dob;
+    private String role;
 
     public User() {
-        // Hàm tạo rỗng bắt buộc cho Firebase
-    }
+    } // Constructor trống cho Firebase
 
     public User(String fullName, String email, String phone, String dob, String role) {
         this.fullName = fullName;
@@ -19,10 +18,24 @@ public class User {
         this.role = role;
     }
 
-    // Các hàm Getter (Lấy dữ liệu ra)
-    public String getFullName() { return fullName; }
-    public String getEmail() { return email; }
-    public String getPhone() { return phone; }
-    public String getDob() { return dob; }
-    public String getRole() { return role; }
+    // --- THÊM CÁC HÀM GETTER NÀY VÀO ---
+    public String getFullName() {
+        return fullName;
+    }
+
+    public String getEmail() {
+        return email;
+    }
+
+    public String getPhone() {
+        return phone;
+    }
+
+    public String getDob() {
+        return dob;
+    }
+
+    public String getRole() {
+        return role;
+    }
 }

@@ -1,13 +1,11 @@
 <?xml version="1.0" encoding="utf-8"?>
-<androidx.constraintlayout.widget.ConstraintLayout
-    xmlns:android="http://schemas.android.com/apk/res/android"
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
-    xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="@color/bg_main"
-    tools:context=".NotificationsActivity">
+    android:background="@color/bg_main">
 
+    <!-- HEADER -->
     <androidx.constraintlayout.widget.ConstraintLayout
         android:id="@+id/layoutHeader"
         android:layout_width="match_parent"
@@ -16,362 +14,148 @@
         android:paddingTop="30dp"
         app:layout_constraintTop_toTopOf="parent">
 
-        <ImageView
-            android:id="@+id/btnBack"
-            android:layout_width="40dp"
-            android:layout_height="40dp"
-            android:background="@drawable/bg_input"
-            android:padding="10dp"
-            android:src="@android:drawable/ic_menu_revert"
-            app:tint="@color/text_primary"
-            app:layout_constraintBottom_toBottomOf="parent"
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Thông báo"
+            android:textColor="@color/text_primary"
+            android:textSize="20sp"
+            android:textStyle="bold"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent" />
+
+        <LinearLayout
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintTop_toTopOf="parent">
+
+            <ImageView
+                android:id="@+id/btnMarkAllRead"
+                android:layout_width="32dp"
+                android:layout_height="32dp"
+                android:padding="6dp"
+                android:src="@android:drawable/checkbox_on_background"
+                app:tint="@color/neon_cyan" />
+
+            <ImageView
+                android:id="@+id/btnClearOld"
+                android:layout_width="32dp"
+                android:layout_height="32dp"
+                android:layout_marginStart="12dp"
+                android:padding="6dp"
+                android:src="@android:drawable/ic_menu_delete"
+                app:tint="@color/error_red" />
+        </LinearLayout>
+    </androidx.constraintlayout.widget.ConstraintLayout>
+
+    <!-- TABS PHÂN LOẠI -->
+    <LinearLayout
+        android:id="@+id/layoutTabs"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="12dp"
+        android:paddingHorizontal="20dp"
+        app:layout_constraintTop_toBottomOf="@id/layoutHeader">
+
+        <TextView
+            android:id="@+id/tabAll"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:background="@drawable/bg_neon_button"
+            android:gravity="center"
+            android:paddingVertical="8dp"
+            android:text="Tất cả"
+            android:textColor="@color/bg_main"
+            android:textStyle="bold" />
+
+        <TextView
+            android:id="@+id/tabPromo"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:gravity="center"
+            android:paddingVertical="8dp"
+            android:text="Khuyến mãi"
+            android:textColor="@color/text_secondary" />
+
+        <TextView
+            android:id="@+id/tabSystem"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:gravity="center"
+            android:paddingVertical="8dp"
+            android:text="Hệ thống"
+            android:textColor="@color/text_secondary" />
+    </LinearLayout>
+
+    <!-- LIST THÔNG BÁO -->
+    <androidx.recyclerview.widget.RecyclerView
+        android:id="@+id/rvNotifications"
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:layout_marginTop="16dp"
+        android:paddingHorizontal="20dp"
+        app:layout_constraintBottom_toTopOf="@id/bottomNavigation"
+        app:layout_constraintTop_toBottomOf="@id/layoutTabs" />
+
+    <!-- Chèn vào giữa RecyclerView và BottomNav -->
+    <LinearLayout
+        android:id="@+id/layoutEmpty"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:gravity="center"
+        android:orientation="vertical"
+        android:visibility="gone"
+        app:layout_constraintBottom_toTopOf="@id/bottomNavigation"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/layoutTabs">
+
+        <ImageView
+            android:layout_width="120dp"
+            android:layout_height="120dp"
+            android:src="@android:drawable/ic_dialog_info"
+            app:tint="@color/text_secondary" />
 
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="Thông Báo"
-            android:textColor="@color/text_primary"
-            android:textSize="20sp"
-            android:textStyle="bold"
-            app:layout_constraintBottom_toBottomOf="@id/btnBack"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toTopOf="@id/btnBack" />
+            android:layout_marginTop="12dp"
+            android:text="Chưa có thông báo nào"
+            android:textColor="@color/text_secondary" />
+    </LinearLayout>
+    <!-- MÀN HÌNH TRỐNG CHO THÔNG BÁO -->
+    <LinearLayout
+        android:id="@+id/layoutEmptyNoti"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:gravity="center"
+        android:orientation="vertical"
+        android:visibility="gone"
+        app:layout_constraintBottom_toTopOf="@id/bottomNavigation"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/layoutTabs">
 
         <ImageView
-            android:id="@+id/btnReadAll"
-            android:layout_width="36dp"
-            android:layout_height="36dp"
-            android:padding="6dp"
-            android:src="@android:drawable/ic_menu_agenda"
-            app:tint="@color/neon_cyan"
-            app:layout_constraintBottom_toBottomOf="@id/btnBack"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintTop_toTopOf="@id/btnBack" />
-    </androidx.constraintlayout.widget.ConstraintLayout>
+            android:layout_width="120dp"
+            android:layout_height="120dp"
+            android:alpha="0.5"
+            android:src="@android:drawable/ic_popup_reminder"
+            app:tint="@color/text_secondary" />
 
-    <HorizontalScrollView
-        android:id="@+id/scrollCategories"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="12dp"
-        android:clipToPadding="false"
-        android:paddingHorizontal="20dp"
-        android:scrollbars="none"
-        app:layout_constraintTop_toBottomOf="@id/layoutHeader">
-
-        <LinearLayout
+        <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:orientation="horizontal">
-
-            <TextView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:background="@drawable/bg_neon_button"
-                android:paddingHorizontal="20dp"
-                android:paddingVertical="8dp"
-                android:text="Tất cả (2)"
-                android:textColor="@color/bg_main"
-                android:textStyle="bold" />
-
-            <TextView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_marginStart="12dp"
-                android:background="@drawable/bg_input"
-                android:paddingHorizontal="20dp"
-                android:paddingVertical="8dp"
-                android:text="Khuyến mãi"
-                android:textColor="@color/text_primary" />
-
-            <TextView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_marginStart="12dp"
-                android:background="@drawable/bg_input"
-                android:paddingHorizontal="20dp"
-                android:paddingVertical="8dp"
-                android:text="Hệ thống"
-                android:textColor="@color/text_primary" />
-        </LinearLayout>
-    </HorizontalScrollView>
-
-    <androidx.core.widget.NestedScrollView
-        android:layout_width="match_parent"
-        android:layout_height="0dp"
-        android:layout_marginTop="16dp"
-        android:clipToPadding="false"
-        android:paddingBottom="24dp"
-        app:layout_constraintBottom_toTopOf="@+id/bottomNavigation"
-        app:layout_constraintTop_toBottomOf="@id/scrollCategories">
-
-        <LinearLayout
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:orientation="vertical"
-            android:paddingHorizontal="20dp">
-
-            <androidx.constraintlayout.widget.ConstraintLayout
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_marginBottom="12dp"
-                android:background="@drawable/bg_card_3d"
-                android:padding="16dp">
-
-                <View android:layout_width="match_parent" android:layout_height="match_parent" android:background="@drawable/bg_input" android:backgroundTint="#1A66FCF1" />
-                <View android:layout_width="4dp" android:layout_height="0dp" android:background="@color/neon_cyan" app:layout_constraintTop_toTopOf="parent" app:layout_constraintBottom_toBottomOf="parent" app:layout_constraintStart_toStartOf="parent"/>
-
-                <ImageView
-                    android:id="@+id/iconNotif1"
-                    android:layout_width="48dp"
-                    android:layout_height="48dp"
-                    android:background="@drawable/circle_image_view"
-                    android:backgroundTint="#1F2833"
-                    android:padding="12dp"
-                    android:src="@android:drawable/ic_menu_my_calendar"
-                    app:tint="@color/neon_cyan"
-                    app:layout_constraintStart_toStartOf="parent"
-                    app:layout_constraintTop_toTopOf="parent"
-                    android:layout_marginStart="12dp"/>
-
-                <LinearLayout
-                    android:layout_width="0dp"
-                    android:layout_height="wrap_content"
-                    android:layout_marginStart="16dp"
-                    android:orientation="vertical"
-                    app:layout_constraintEnd_toEndOf="parent"
-                    app:layout_constraintStart_toEndOf="@id/iconNotif1"
-                    app:layout_constraintTop_toTopOf="parent">
-
-                    <LinearLayout
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:orientation="horizontal"
-                        android:gravity="center_vertical">
-
-                        <TextView
-                            android:layout_width="0dp"
-                            android:layout_height="wrap_content"
-                            android:layout_weight="1"
-                            android:text="Sắp đến giờ chiếu rồi!"
-                            android:textColor="@color/text_primary"
-                            android:textSize="15sp"
-                            android:textStyle="bold" />
-
-                        <TextView
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:text="15 phút trước"
-                            android:textColor="@color/neon_cyan"
-                            android:textSize="11sp" />
-                    </LinearLayout>
-
-                    <TextView
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:layout_marginTop="6dp"
-                        android:text="Phim 'Avatar: Dòng Chảy Của Nước' tại CineGo Landmark 81 sẽ bắt đầu sau 2 tiếng nữa. Bạn nhớ đến sớm để nhận bắp nước nhé."
-                        android:textColor="@color/text_secondary"
-                        android:textSize="13sp"
-                        android:lineSpacingExtra="4dp"/>
-                </LinearLayout>
-            </androidx.constraintlayout.widget.ConstraintLayout>
-
-            <androidx.constraintlayout.widget.ConstraintLayout
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_marginBottom="12dp"
-                android:background="@drawable/bg_card_3d"
-                android:padding="16dp">
-
-                <View android:layout_width="match_parent" android:layout_height="match_parent" android:background="@drawable/bg_input" android:backgroundTint="#1A66FCF1" />
-                <View android:layout_width="4dp" android:layout_height="0dp" android:background="@color/neon_cyan" app:layout_constraintTop_toTopOf="parent" app:layout_constraintBottom_toBottomOf="parent" app:layout_constraintStart_toStartOf="parent"/>
-
-                <ImageView
-                    android:id="@+id/iconNotif2"
-                    android:layout_width="48dp"
-                    android:layout_height="48dp"
-                    android:background="@drawable/circle_image_view"
-                    android:backgroundTint="#2DEF4444"
-                    android:padding="12dp"
-                    android:src="@android:drawable/btn_star"
-                    app:tint="@color/error_red"
-                    app:layout_constraintStart_toStartOf="parent"
-                    app:layout_constraintTop_toTopOf="parent"
-                    android:layout_marginStart="12dp"/>
-
-                <LinearLayout
-                    android:layout_width="0dp"
-                    android:layout_height="wrap_content"
-                    android:layout_marginStart="16dp"
-                    android:orientation="vertical"
-                    app:layout_constraintEnd_toEndOf="parent"
-                    app:layout_constraintStart_toEndOf="@id/iconNotif2"
-                    app:layout_constraintTop_toTopOf="parent">
-
-                    <LinearLayout
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:orientation="horizontal"
-                        android:gravity="center_vertical">
-
-                        <TextView
-                            android:layout_width="0dp"
-                            android:layout_height="wrap_content"
-                            android:layout_weight="1"
-                            android:text="Tặng bạn Voucher 50K 🎁"
-                            android:textColor="@color/text_primary"
-                            android:textSize="15sp"
-                            android:textStyle="bold" />
-
-                        <TextView
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:text="2 giờ trước"
-                            android:textColor="@color/neon_cyan"
-                            android:textSize="11sp" />
-                    </LinearLayout>
-
-                    <TextView
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:layout_marginTop="6dp"
-                        android:text="CineGo tặng riêng bạn mã giảm giá 50.000đ khi đặt vé IMAX vào cuối tuần này. Nhanh tay kẻo lỡ!"
-                        android:textColor="@color/text_secondary"
-                        android:textSize="13sp"
-                        android:lineSpacingExtra="4dp"/>
-                </LinearLayout>
-            </androidx.constraintlayout.widget.ConstraintLayout>
-
-            <androidx.constraintlayout.widget.ConstraintLayout
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_marginBottom="12dp"
-                android:background="@drawable/bg_input"
-                android:padding="16dp">
-
-                <ImageView
-                    android:id="@+id/iconNotif3"
-                    android:layout_width="48dp"
-                    android:layout_height="48dp"
-                    android:background="@drawable/circle_image_view"
-                    android:backgroundTint="#1F2833"
-                    android:padding="12dp"
-                    android:src="@android:drawable/ic_menu_preferences"
-                    app:tint="@color/text_secondary"
-                    app:layout_constraintStart_toStartOf="parent"
-                    app:layout_constraintTop_toTopOf="parent"/>
-
-                <LinearLayout
-                    android:layout_width="0dp"
-                    android:layout_height="wrap_content"
-                    android:layout_marginStart="16dp"
-                    android:orientation="vertical"
-                    app:layout_constraintEnd_toEndOf="parent"
-                    app:layout_constraintStart_toEndOf="@id/iconNotif3"
-                    app:layout_constraintTop_toTopOf="parent">
-
-                    <LinearLayout
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:orientation="horizontal"
-                        android:gravity="center_vertical">
-
-                        <TextView
-                            android:layout_width="0dp"
-                            android:layout_height="wrap_content"
-                            android:layout_weight="1"
-                            android:text="Cập nhật hệ thống"
-                            android:textColor="@color/text_secondary"
-                            android:textSize="15sp"
-                            android:textStyle="bold" />
-
-                        <TextView
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:text="Hôm qua"
-                            android:textColor="@color/text_secondary"
-                            android:textSize="11sp" />
-                    </LinearLayout>
-
-                    <TextView
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:layout_marginTop="6dp"
-                        android:text="Ứng dụng đã được cập nhật lên phiên bản 2.0.1 để cải thiện hiệu năng và sửa một số lỗi nhỏ."
-                        android:textColor="@color/text_secondary"
-                        android:textSize="13sp"
-                        android:lineSpacingExtra="4dp"/>
-                </LinearLayout>
-            </androidx.constraintlayout.widget.ConstraintLayout>
-
-            <androidx.constraintlayout.widget.ConstraintLayout
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:background="@drawable/bg_input"
-                android:padding="16dp">
-
-                <ImageView
-                    android:id="@+id/iconNotif4"
-                    android:layout_width="48dp"
-                    android:layout_height="48dp"
-                    android:background="@drawable/circle_image_view"
-                    android:backgroundTint="#1F2833"
-                    android:padding="12dp"
-                    android:src="@android:drawable/ic_menu_save"
-                    app:tint="@color/text_secondary"
-                    app:layout_constraintStart_toStartOf="parent"
-                    app:layout_constraintTop_toTopOf="parent"/>
-
-                <LinearLayout
-                    android:layout_width="0dp"
-                    android:layout_height="wrap_content"
-                    android:layout_marginStart="16dp"
-                    android:orientation="vertical"
-                    app:layout_constraintEnd_toEndOf="parent"
-                    app:layout_constraintStart_toEndOf="@id/iconNotif4"
-                    app:layout_constraintTop_toTopOf="parent">
-
-                    <LinearLayout
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:orientation="horizontal"
-                        android:gravity="center_vertical">
-
-                        <TextView
-                            android:layout_width="0dp"
-                            android:layout_height="wrap_content"
-                            android:layout_weight="1"
-                            android:text="Đặt vé thành công!"
-                            android:textColor="@color/text_secondary"
-                            android:textSize="15sp"
-                            android:textStyle="bold" />
-
-                        <TextView
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:text="12 Th 10"
-                            android:textColor="@color/text_secondary"
-                            android:textSize="11sp" />
-                    </LinearLayout>
-
-                    <TextView
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:layout_marginTop="6dp"
-                        android:text="Bạn đã thanh toán thành công 360.000đ cho mã vé TKT-8293749. Chúc bạn xem phim vui vẻ!"
-                        android:textColor="@color/text_secondary"
-                        android:textSize="13sp"
-                        android:lineSpacingExtra="4dp"/>
-                </LinearLayout>
-            </androidx.constraintlayout.widget.ConstraintLayout>
-
-        </LinearLayout>
-    </androidx.core.widget.NestedScrollView>
-
+            android:layout_marginTop="16dp"
+            android:text="Hộp thư đang trống"
+            android:textColor="@color/text_secondary"
+            android:textSize="16sp" />
+    </LinearLayout>
+    <!-- BOTTOM NAVIGATION (ID trùng với các file trước) -->
     <com.google.android.material.bottomnavigation.BottomNavigationView
         android:id="@+id/bottomNavigation"
         android:layout_width="match_parent"
@@ -380,10 +164,7 @@
         app:itemIconTint="@color/nav_item_colors"
         app:itemTextColor="@color/nav_item_colors"
         app:labelVisibilityMode="labeled"
-        app:menu="@menu/menu_bottom_nav"
         app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:elevation="24dp" />
+        app:menu="@menu/menu_bottom_nav" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>

@@ -1,5 +1,6 @@
 package com.example.cinego;
 
+import android.content.Intent;
 import android.graphics.Color;
 import android.os.Bundle;
 import android.view.Gravity;
@@ -15,6 +16,7 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
+import com.google.android.material.bottomnavigation.BottomNavigationView;
 import com.google.ai.client.generativeai.GenerativeModel;
 import com.google.ai.client.generativeai.java.GenerativeModelFutures;
 import com.google.ai.client.generativeai.type.Content;
@@ -39,12 +41,17 @@ public class AiChatActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_ai_chat);
 
+        // 1. Ánh xạ và thiết lập giao diện
         anhXaView();
         setupRecyclerView();
 
-        // Tin nhắn chào mừng
+        // 2. KÍCH HOẠT THANH MENU (Quan trọng để không bị đứng yên)
+        setupBottomNavigation();
+
+        // 3. Tin nhắn chào mừng
         addMessage("Xin chào! 👋 Mình là trợ lý AI Ci. Bạn muốn tìm phim gì hôm nay?", "bot");
 
+        // 4. Sự kiện gửi tin nhắn
         btnSend.setOnClickListener(v -> {
             String question = edtMessage.getText().toString().trim();
             if (!question.isEmpty()) {
@@ -52,12 +59,13 @@ public class AiChatActivity extends AppCompatActivity {
             }
         });
 
-        findViewById(R.id.btnBack).setOnClickListener(v -> finish());
-
-        // Gắn sự kiện cho các nút gợi ý (Chips)
+        // 5. Gắn sự kiện cho các nút gợi ý (Chips)
         findViewById(R.id.chipAction).setOnClickListener(v -> sendMessage("Gợi ý phim hành động hay"));
         findViewById(R.id.chipCouple).setOnClickListener(v -> sendMessage("Phim gì lãng mạn cho cặp đôi?"));
         findViewById(R.id.chipComedy).setOnClickListener(v -> sendMessage("Tìm phim hài hước nhất"));
+
+        // Nút quay lại
+        findViewById(R.id.btnBack).setOnClickListener(v -> finish());
     }
 
     private void anhXaView() {
@@ -91,8 +99,7 @@ public class AiChatActivity extends AppCompatActivity {
         addMessage("Ai Ci đang suy nghĩ...", "bot");
         int loadingIndex = messageList.size() - 1;
 
-        // TÊN MODEL CHUẨN: "gemini-1.5-flash"
-        // Dán API KEY bạn lấy từ Google AI Studio vào đây
+        // THAY API KEY THẬT CỦA BẠN VÀO ĐÂY
         GenerativeModel gm = new GenerativeModel("gemini-1.5-flash", "AIzaSyDiW2aHpS1oo4csyO7tgKMSO8coOn5AL8s");
         GenerativeModelFutures model = GenerativeModelFutures.from(gm);
 
@@ -103,10 +110,8 @@ public class AiChatActivity extends AppCompatActivity {
             @Override
             public void onSuccess(GenerateContentResponse result) {
                 runOnUiThread(() -> {
-                    // Cập nhật lại nội dung thay vì xóa (để không bị văng app)
                     messageList.get(loadingIndex).setText(result.getText());
                     chatAdapter.notifyItemChanged(loadingIndex);
-                    rvChat.scrollToPosition(loadingIndex);
                 });
             }
 
@@ -118,6 +123,37 @@ public class AiChatActivity extends AppCompatActivity {
                 });
             }
         }, this.getMainExecutor());
+    }
+
+    // --- HÀM ĐIỀU HƯỚNG TAB ---
+    private void setupBottomNavigation() {
+        BottomNavigationView bottomNavigationView = findViewById(R.id.bottomNavigation);
+        if (bottomNavigationView != null) {
+            bottomNavigationView.setSelectedItemId(R.id.nav_ai_chat);
+            bottomNavigationView.setOnItemSelectedListener(item -> {
+                int itemId = item.getItemId();
+                if (itemId == R.id.nav_home) {
+                    startActivity(new Intent(this, MainActivity.class));
+                    overridePendingTransition(0, 0);
+                    return true;
+                } else if (itemId == R.id.nav_movies) {
+                    startActivity(new Intent(this, MoviesActivity.class));
+                    overridePendingTransition(0, 0);
+                    return true;
+                } else if (itemId == R.id.nav_ai_chat) {
+                    return true;
+                } else if (itemId == R.id.nav_notifications) {
+                    startActivity(new Intent(this, NotificationsActivity.class));
+                    overridePendingTransition(0, 0);
+                    return true;
+                } else if (itemId == R.id.nav_tickets) {
+                    startActivity(new Intent(this, MyTicketsActivity.class));
+                    overridePendingTransition(0, 0);
+                    return true;
+                }
+                return false;
+            });
+        }
     }
 
     // --- SUPPORT CLASSES ---
