@@ -42,6 +42,13 @@ dependencies {
     implementation(libs.activity)
     implementation(libs.constraintlayout)
 
+    // Thư viện Google AI (Gemini)
+    implementation("com.google.ai.client.generativeai:generativeai:0.9.0")
+    // Thư viện hỗ trợ lập trình bất đồng bộ
+    implementation("com.google.guava:guava:31.1-android")
+
+    implementation("com.google.firebase:firebase-auth:22.3.1")
+
     implementation("com.google.firebase:firebase-auth")
     implementation("com.google.firebase:firebase-database")
 

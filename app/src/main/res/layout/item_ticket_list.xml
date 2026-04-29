@@ -1,6 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
-<androidx.constraintlayout.widget.ConstraintLayout
-    xmlns:android="http://schemas.android.com/apk/res/android"
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
@@ -14,79 +13,59 @@
         android:layout_height="100dp"
         android:scaleType="centerCrop"
         android:src="@drawable/img_bg_login"
-        app:shapeAppearanceOverlay="@style/circle_image_view"
+        app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintBottom_toBottomOf="parent" />
+        app:shapeAppearanceOverlay="@style/circle_image_view" />
 
     <LinearLayout
         android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:layout_marginStart="16dp"
         android:orientation="vertical"
+        app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toEndOf="@id/imgPosterTicket"
-        app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintBottom_toBottomOf="parent">
+        app:layout_constraintTop_toTopOf="parent">
 
         <TextView
-            android:id="@+id/tvMovieName"
+            android:id="@+id/tvMovieNameTicket"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:text="Avatar: Dòng Chảy Của Nước"
+            android:ellipsize="end"
+            android:maxLines="1"
+            android:text="Tên phim"
             android:textColor="@color/text_primary"
             android:textSize="16sp"
-            android:textStyle="bold"
-            android:maxLines="1"
-            android:ellipsize="end" />
+            android:textStyle="bold" />
 
         <TextView
-            android:layout_width="wrap_content"
+            android:id="@+id/tvCinemaTicket"
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginTop="4dp"
-            android:id="@+id/tvCinemaName"
-            android:text="CineGo Landmark 81"
+            android:text="Tên rạp"
             android:textColor="@color/text_secondary"
             android:textSize="13sp" />
 
         <TextView
-            android:layout_width="wrap_content"
+            android:id="@+id/tvDateTimeTicket"
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginTop="2dp"
-            android:id="@+id/tvTime"
-            android:text="14 Th 10 • 13:15"
+            android:text="Ngày và giờ"
+            android:textColor="@color/text_secondary"
+            android:textSize="13sp" />
+
+        <TextView
+            android:id="@+id/tvSeatsTicket"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="6dp"
+            android:text="Ghế: ..."
             android:textColor="@color/neon_cyan"
             android:textSize="13sp"
             android:textStyle="bold" />
-
-        <LinearLayout
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="8dp"
-            android:orientation="horizontal"
-            android:gravity="center_vertical">
-
-            <TextView
-                android:layout_width="0dp"
-                android:layout_weight="1"
-                android:layout_height="wrap_content"
-                android:id="@+id/tvSeatInfo"
-                android:text="Ghế: M1, M2"
-                android:textColor="@color/text_secondary"
-                android:textSize="12sp" />
-
-            <TextView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:background="@drawable/bg_input"
-                android:backgroundTint="#1A66FCF1"
-                android:paddingHorizontal="12dp"
-                android:paddingVertical="4dp"
-                android:text="Xem vé"
-                android:textColor="@color/neon_cyan"
-                android:textSize="12sp"
-                android:textStyle="bold" />
-        </LinearLayout>
     </LinearLayout>
 
 </androidx.constraintlayout.widget.ConstraintLayout>

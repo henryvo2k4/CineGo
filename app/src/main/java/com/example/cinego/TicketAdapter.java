@@ -6,11 +6,9 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.TextView;
-import android.widget.Toast;
-
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
-
+import com.bumptech.glide.Glide;
 import java.util.List;
 
 public class TicketAdapter extends RecyclerView.Adapter<TicketAdapter.TicketViewHolder> {
@@ -26,28 +24,32 @@ public class TicketAdapter extends RecyclerView.Adapter<TicketAdapter.TicketView
     @NonNull
     @Override
     public TicketViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
+        // Đảm bảo file layout là item_ticket_list.xml
         View view = LayoutInflater.from(context).inflate(R.layout.item_ticket_list, parent, false);
         return new TicketViewHolder(view);
     }
 
     @Override
-    public void onBindViewHolder(@NonNull TicketViewHolder holder, int position) {
+    public void onBindViewHolder(@NonNull TicketViewHolder holder, int position) { // Thêm 'int position' ở đây
         Ticket ticket = ticketList.get(position);
 
-        // Đổ dữ liệu vào View
-        holder.tvMovieName.setText(ticket.getMovieName());
-        holder.imgPosterTicket.setImageResource(ticket.getPosterResId());
+        // Đổ dữ liệu chữ
+        if (ticket != null) {
+            holder.tvMovieName.setText(ticket.getMovieName());
+            holder.tvCinema.setText(ticket.getCinemaName());
+            holder.tvDateTime.setText(ticket.getDateTime());
+            holder.tvSeats.setText("Ghế: " + ticket.getSeats());
 
-        // Nếu bạn đã thêm ID ở Bước 1 thì bỏ comment 3 dòng dưới này ra nhé:
-        // holder.tvCinemaName.setText(ticket.getCinemaName());
-        // holder.tvTime.setText(ticket.getTime());
-        // holder.tvSeatInfo.setText("Ghế: " + ticket.getSeats());
-
-        // Bắt sự kiện bấm vào nút "Xem vé"
-        holder.itemView.setOnClickListener(v -> {
-            Toast.makeText(context, "Đang mở vé: " + ticket.getMovieName(), Toast.LENGTH_SHORT).show();
-            // (Sau này có thể dùng Intent chuyển sang TicketActivity để xem mã QR)
-        });
+            // Dùng Glide để load ảnh từ URL
+            if (ticket.getPosterUrl() != null && !ticket.getPosterUrl().isEmpty()) {
+                Glide.with(context)
+                        .load(ticket.getPosterUrl())
+                        .placeholder(R.drawable.img_bg_login_low)
+                        .into(holder.imgPosterTicket);
+            } else {
+                holder.imgPosterTicket.setImageResource(R.drawable.img_bg_login);
+            }
+        }
     }
 
     @Override
@@ -56,18 +58,16 @@ public class TicketAdapter extends RecyclerView.Adapter<TicketAdapter.TicketView
     }
 
     public static class TicketViewHolder extends RecyclerView.ViewHolder {
+        TextView tvMovieName, tvCinema, tvDateTime, tvSeats;
         ImageView imgPosterTicket;
-        TextView tvMovieName, tvCinemaName, tvTime, tvSeatInfo;
 
         public TicketViewHolder(@NonNull View itemView) {
             super(itemView);
+            tvMovieName = itemView.findViewById(R.id.tvMovieNameTicket);
+            tvCinema = itemView.findViewById(R.id.tvCinemaTicket);
+            tvDateTime = itemView.findViewById(R.id.tvDateTimeTicket);
+            tvSeats = itemView.findViewById(R.id.tvSeatsTicket);
             imgPosterTicket = itemView.findViewById(R.id.imgPosterTicket);
-            tvMovieName = itemView.findViewById(R.id.tvMovieName);
-
-            // Nếu bạn đã thêm ID ở Bước 1 thì bỏ comment 3 dòng dưới này ra:
-            // tvCinemaName = itemView.findViewById(R.id.tvCinemaName);
-            // tvTime = itemView.findViewById(R.id.tvTime);
-            // tvSeatInfo = itemView.findViewById(R.id.tvSeatInfo);
         }
     }
 }

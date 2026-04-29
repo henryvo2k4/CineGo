@@ -2,17 +2,26 @@ package com.example.cinego;
 
 import android.content.Intent;
 import android.os.Bundle;
+import android.view.View;
 import android.widget.ImageView;
 import android.widget.TextView;
+import android.widget.Toast;
 
+import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.content.ContextCompat;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.google.android.material.bottomnavigation.BottomNavigationView;
+import com.google.firebase.database.DataSnapshot;
+import com.google.firebase.database.DatabaseError;
+import com.google.firebase.database.DatabaseReference;
+import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.database.ValueEventListener;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 
 public class MyTicketsActivity extends AppCompatActivity {
@@ -22,33 +31,27 @@ public class MyTicketsActivity extends AppCompatActivity {
     private TextView tabUpcoming, tabHistory;
 
     private TicketAdapter ticketAdapter;
-    private List<Ticket> upcomingList;
-    private List<Ticket> historyList;
+    private List<Ticket> allTicketsList = new ArrayList<>();
+    private List<Ticket> upcomingList = new ArrayList<>();
+    private List<Ticket> historyList = new ArrayList<>();
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_my_tickets);
 
-        // 1. Ánh xạ View
         initViews();
+        setupBottomNavigation();
 
-        // 2. Xử lý nút quay lại
         if (btnBack != null) {
             btnBack.setOnClickListener(v -> finish());
         }
 
-        // 3. Chuẩn bị dữ liệu cho 2 Tab
-        prepareData();
+        // Lấy dữ liệu THẬT từ Firebase
+        fetchTicketsFromFirebase();
 
-        // 4. Thiết lập RecyclerView (Mặc định hiển thị vé Sắp tới)
-        setupRecyclerView();
-
-        // 5. Thiết lập logic bấm chuyển Tab
+        // Thiết lập logic bấm chuyển Tab
         setupTabsLogic();
-
-        // 6. Kích hoạt Bottom Navigation
-        setupBottomNavigation();
     }
 
     private void initViews() {
@@ -56,57 +59,91 @@ public class MyTicketsActivity extends AppCompatActivity {
         rvTickets = findViewById(R.id.rvMyTickets);
         tabUpcoming = findViewById(R.id.tabUpcoming);
         tabHistory = findViewById(R.id.tabHistory);
-    }
 
-    private void prepareData() {
-        // Dữ liệu giả lập cho Tab "Sắp tới" (Vé chưa xem)
-        upcomingList = new ArrayList<>();
-        upcomingList.add(new Ticket("Avatar: Dòng Chảy Của Nước", "CineGo Landmark 81", "14 Th 10 • 13:15", "M1, M2", R.drawable.img_bg_login));
-        upcomingList.add(new Ticket("Kung Fu Panda 4", "CineGo Giga Mall", "20 Th 10 • 19:00", "G4, G5", R.drawable.img_bg_login));
-
-        // Dữ liệu giả lập cho Tab "Lịch sử" (Vé đã xem trong quá khứ)
-        historyList = new ArrayList<>();
-        historyList.add(new Ticket("Lật Mặt 6: Tấm Vé Định Mệnh", "CineGo Sư Vạn Hạnh", "10 Th 05 • 20:00", "A1, A2, A3", R.drawable.img_bg_login));
-        historyList.add(new Ticket("Doraemon: Khủng Long Nobita", "CineGo Aeon Tân Phú", "01 Th 06 • 09:30", "F7, F8", R.drawable.img_bg_login));
-        historyList.add(new Ticket("Mai", "CineGo Landmark 81", "14 Th 02 • 18:00", "VIP 1, VIP 2", R.drawable.img_bg_login));
-    }
-
-    private void setupRecyclerView() {
-        // Mặc định lúc mới vào trang sẽ hiển thị danh sách Upcoming (Sắp tới)
-        ticketAdapter = new TicketAdapter(this, upcomingList);
         rvTickets.setLayoutManager(new LinearLayoutManager(this));
-        rvTickets.setAdapter(ticketAdapter);
+    }
+
+    private void fetchTicketsFromFirebase() {
+        DatabaseReference dbRef = FirebaseDatabase.getInstance("https://cinego-7aed8-default-rtdb.asia-southeast1.firebasedatabase.app")
+                .getReference("booked_tickets");
+
+        dbRef.addValueEventListener(new ValueEventListener() {
+            @Override
+            public void onDataChange(@NonNull DataSnapshot snapshot) {
+                allTicketsList.clear();
+                upcomingList.clear();
+                historyList.clear();
+
+                long currentTime = System.currentTimeMillis();
+                // Quy ước: Vé mua trong vòng 24 giờ là "Sắp tới", cũ hơn là "Lịch sử"
+                long oneDayInMillis = 24 * 60 * 60 * 1000;
+
+                for (DataSnapshot data : snapshot.getChildren()) {
+                    Ticket ticket = data.getValue(Ticket.class);
+                    if (ticket != null) {
+                        allTicketsList.add(ticket);
+
+                        if (currentTime - ticket.getTimestamp() < oneDayInMillis) {
+                            upcomingList.add(ticket);
+                        } else {
+                            historyList.add(ticket);
+                        }
+                    }
+                }
+
+                // Đảo ngược danh sách để vé mới nhất hiện lên đầu
+                Collections.reverse(upcomingList);
+                Collections.reverse(historyList);
+
+                // Mặc định hiển thị tab Sắp tới
+                updateRecyclerView(upcomingList);
+            }
+
+            @Override
+            public void onCancelled(@NonNull DatabaseError error) {
+                Toast.makeText(MyTicketsActivity.this, "Lỗi: " + error.getMessage(), Toast.LENGTH_SHORT).show();
+            }
+        });
+    }
+
+    private void updateRecyclerView(List<Ticket> list) {
+        View layoutEmpty = findViewById(R.id.layoutEmptyTickets);
+
+        if (list == null || list.isEmpty()) {
+            // Nếu không có vé: Hiện màn hình trống, ẩn danh sách
+            rvTickets.setVisibility(View.GONE);
+            layoutEmpty.setVisibility(View.VISIBLE);
+        } else {
+            // Nếu có vé: Hiện danh sách, ẩn màn hình trống
+            rvTickets.setVisibility(View.VISIBLE);
+            layoutEmpty.setVisibility(View.GONE);
+
+            ticketAdapter = new TicketAdapter(this, list);
+            rvTickets.setAdapter(ticketAdapter);
+        }
     }
 
     private void setupTabsLogic() {
-        // Bắt sự kiện bấm vào Tab "Sắp tới"
         tabUpcoming.setOnClickListener(v -> {
-            // Đổi giao diện: Nổi bật Tab Sắp tới
+            // Đổi màu Tab
             tabUpcoming.setBackgroundResource(R.drawable.bg_neon_button);
             tabUpcoming.setTextColor(ContextCompat.getColor(this, R.color.bg_main));
-
-            // Làm mờ Tab Lịch sử (Xóa background, đổi chữ thành màu xám)
             tabHistory.setBackgroundResource(0);
             tabHistory.setTextColor(ContextCompat.getColor(this, R.color.text_secondary));
 
-            // Cập nhật lại danh sách bên dưới
-            ticketAdapter = new TicketAdapter(this, upcomingList);
-            rvTickets.setAdapter(ticketAdapter);
+            // Hiện danh sách sắp tới
+            updateRecyclerView(upcomingList);
         });
 
-        // Bắt sự kiện bấm vào Tab "Lịch sử"
         tabHistory.setOnClickListener(v -> {
-            // Đổi giao diện: Nổi bật Tab Lịch sử
+            // Đổi màu Tab
             tabHistory.setBackgroundResource(R.drawable.bg_neon_button);
             tabHistory.setTextColor(ContextCompat.getColor(this, R.color.bg_main));
-
-            // Làm mờ Tab Sắp tới
             tabUpcoming.setBackgroundResource(0);
             tabUpcoming.setTextColor(ContextCompat.getColor(this, R.color.text_secondary));
 
-            // Cập nhật lại danh sách bên dưới
-            ticketAdapter = new TicketAdapter(this, historyList);
-            rvTickets.setAdapter(ticketAdapter);
+            // Hiện danh sách lịch sử
+            updateRecyclerView(historyList);
         });
     }
 
@@ -114,29 +151,22 @@ public class MyTicketsActivity extends AppCompatActivity {
         BottomNavigationView bottomNavigationView = findViewById(R.id.bottomNavigation);
         if (bottomNavigationView != null) {
             bottomNavigationView.setSelectedItemId(R.id.nav_tickets);
-
             bottomNavigationView.setOnItemSelectedListener(item -> {
                 int itemId = item.getItemId();
                 if (itemId == R.id.nav_home) {
-                    startActivity(new Intent(getApplicationContext(), MainActivity.class));
-                    overridePendingTransition(0, 0);
+                    startActivity(new Intent(this, MainActivity.class));
                     return true;
                 } else if (itemId == R.id.nav_movies) {
-                    startActivity(new Intent(getApplicationContext(), MoviesActivity.class));
-                    overridePendingTransition(0, 0);
+                    startActivity(new Intent(this, MoviesActivity.class));
                     return true;
                 } else if (itemId == R.id.nav_ai_chat) {
-                    startActivity(new Intent(getApplicationContext(), AiChatActivity.class));
-                    overridePendingTransition(0, 0);
+                    startActivity(new Intent(this, AiChatActivity.class));
                     return true;
                 } else if (itemId == R.id.nav_notifications) {
-                    startActivity(new Intent(getApplicationContext(), NotificationsActivity.class));
-                    overridePendingTransition(0, 0);
-                    return true;
-                } else if (itemId == R.id.nav_tickets) {
+                    startActivity(new Intent(this, NotificationsActivity.class));
                     return true;
                 }
-                return false;
+                return itemId == R.id.nav_tickets;
             });
         }
     }

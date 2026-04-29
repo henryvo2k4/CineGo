@@ -2,58 +2,61 @@ package com.example.cinego;
 
 import android.content.Intent;
 import android.os.Bundle;
-import android.view.View;
-import android.widget.Button;
 import android.widget.ImageView;
-import android.widget.Toast;
-
+import android.widget.TextView;
 import androidx.appcompat.app.AppCompatActivity;
+import com.bumptech.glide.Glide;
 
 public class TicketActivity extends AppCompatActivity {
-
-    private ImageView btnClose;
-    private Button btnBackToHome;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_ticket);
 
-        // 1. Ánh xạ các View từ XML
-        btnClose = findViewById(R.id.btnClose);
-        btnBackToHome = findViewById(R.id.btnBackToHome);
+        // 1. Ánh xạ các thành phần giao diện
+        TextView tvName = findViewById(R.id.tvMovieNameTicketDetail);
+        TextView tvCinema = findViewById(R.id.tvCinemaTicketDetail);
+        TextView tvDate = findViewById(R.id.tvDateTicketDetail);
+        TextView tvTime = findViewById(R.id.tvTimeTicketDetail);
+        TextView tvSeats = findViewById(R.id.tvSeatsTicketDetail);
+        TextView tvSnacks = findViewById(R.id.tvSnacksTicketDetail);
+        TextView tvCode = findViewById(R.id.tvTicketCode);
+        ImageView imgPoster = findViewById(R.id.imgTicketPoster);
 
-        // 2. Xử lý nút Đóng (dấu X)
-        btnClose.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                backToHome();
+        // 2. Nhận dữ liệu từ CheckoutActivity gửi sang
+        Intent intent = getIntent();
+        if (intent != null) {
+            tvName.setText(intent.getStringExtra("movieName"));
+            tvCinema.setText(intent.getStringExtra("selectedCinema"));
+            tvDate.setText(intent.getStringExtra("selectedDate"));
+            tvTime.setText(intent.getStringExtra("selectedTime"));
+            tvSeats.setText(intent.getStringExtra("seats"));
+            tvSnacks.setText(intent.getStringExtra("snackDetails"));
+
+            // Tạo mã vé giả định dựa trên ID Firebase
+            String ticketId = intent.getStringExtra("ticketId");
+            if (ticketId != null && ticketId.length() > 10) {
+                tvCode.setText("MÃ VÉ: TKT-" + ticketId.substring(1, 10).toUpperCase());
             }
+
+            // Nạp ảnh Poster phim
+            String posterUrl = intent.getStringExtra("posterUrl");
+            if (posterUrl != null && !posterUrl.isEmpty()) {
+                Glide.with(this).load(posterUrl).into(imgPoster);
+            }
+        }
+
+        // 3. Xử lý các nút bấm
+        findViewById(R.id.btnBackToHome).setOnClickListener(v -> {
+            // Quay về trang chủ và dọn dẹp các màn hình cũ
+            Intent homeIntent = new Intent(this, MainActivity.class);
+            homeIntent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+            startActivity(homeIntent);
         });
 
-        // 3. Xử lý nút "Về Trang Chủ"
-        btnBackToHome.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                backToHome();
-            }
+        findViewById(R.id.btnClose).setOnClickListener(v -> {
+            finish(); // Đóng màn hình này
         });
-
-        // Gợi ý: Bạn có thể nhận dữ liệu vé từ CheckoutActivity truyền sang
-        // để hiển thị đúng tên phim, phòng chiếu và số ghế thực tế tại đây.
-    }
-
-    /**
-     * Hàm dùng để quay lại màn hình chính và xóa các màn hình trung gian (Thanh toán, Chọn ghế...)
-     * ra khỏi bộ nhớ (Stack) để app chạy nhẹ và đúng luồng.
-     */
-    private void backToHome() {
-        Intent intent = new Intent(TicketActivity.this, MainActivity.class);
-        // FLAG_ACTIVITY_CLEAR_TOP giúp xóa hết các Activity cũ, đưa MainActivity lên trên cùng
-        intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_SINGLE_TOP);
-        startActivity(intent);
-        finish(); // Đóng màn hình hiện tại
-
-        Toast.makeText(this, "Chúc bạn xem phim vui vẻ!", Toast.LENGTH_SHORT).show();
     }
 }
