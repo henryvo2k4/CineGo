@@ -2,110 +2,164 @@ package com.example.cinego;
 
 import android.content.Intent;
 import android.os.Bundle;
-import android.text.TextUtils;
 import android.view.View;
-import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
 import androidx.appcompat.app.AppCompatActivity;
-import androidx.constraintlayout.widget.ConstraintLayout;
+import com.bumptech.glide.Glide;
+import java.util.ArrayList;
+
+import com.google.firebase.database.DatabaseReference;
+import com.google.firebase.database.FirebaseDatabase;
 
 public class CheckoutActivity extends AppCompatActivity {
 
-    private ImageView btnBack;
-    private EditText edtPromoCode;
-    private Button btnApplyPromo, btnConfirmPayment;
-    private ConstraintLayout layoutZaloPay, layoutMoMo, layoutCreditCard;
-    private TextView tvFinalTotal;
+    private TextView tvMovieName, tvCinema, tvDateTime, tvSeats, tvSnacksName;
+    private TextView tvTempTicket, tvSnackPrice, tvDiscount, tvFinalTotal;
+    private View layoutZalo, layoutMoMo, layoutCard;
+    private ImageView imgPoster;
 
-    private int amountFromPrevious = 0;
-    private int discount = 0;
-    private String selectedMethod = "ZaloPay"; // Mặc định như trong XML
+    private long ticketPrice = 0, snackPrice = 0, finalTotal = 0;
+    private String selectedMethod = "ZaloPay"; // Mặc định chọn ZaloPay
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_checkout);
 
-        initViews();
+        anhXaView();
+        nhanVaHienThiData();
+        setupPaymentSelection(); // Thêm hàm xử lý chọn phương thức thanh toán
 
-        // 1. Nhận tổng tiền từ màn hình Bắp Nước truyền sang
-        amountFromPrevious = getIntent().getIntExtra("GRAND_TOTAL", 360000);
-        updatePriceUI();
+        findViewById(R.id.btnBack).setOnClickListener(v -> finish());
 
-        // 2. Xử lý nút Quay lại
-        btnBack.setOnClickListener(v -> finish());
+        // Áp dụng mã giảm giá
+        findViewById(R.id.btnApplyPromo).setOnClickListener(v -> {
+            EditText edt = findViewById(R.id.edtPromoCode);
+            if (edt.getText().toString().equalsIgnoreCase("CINEGO")) {
+                long discount = 20000;
+                tvDiscount.setText("- " + String.format("%,d đ", discount));
+                tvFinalTotal.setText(String.format("%,d đ", finalTotal - discount));
+                Toast.makeText(this, "Đã giảm 20k!", Toast.LENGTH_SHORT).show();
+            }
+        });
 
-        // 3. Xử lý chọn Phương thức thanh toán
-        setupPaymentSelection();
+        // Xác nhận thanh toán
+        findViewById(R.id.btnConfirmPayment).setOnClickListener(v -> {
+            // 1. Kết nối tới Firebase
+            DatabaseReference dbRef = FirebaseDatabase.getInstance("https://cinego-7aed8-default-rtdb.asia-southeast1.firebasedatabase.app")
+                    .getReference("booked_tickets");
 
-        // 4. Xử lý áp dụng Mã giảm giá
-        btnApplyPromo.setOnClickListener(v -> applyPromoCode());
+            // 2. Tạo một ID duy nhất cho vé này
+            String ticketId = dbRef.push().getKey();
 
-        // 5. Xử lý nút Xác nhận thanh toán
-        btnConfirmPayment.setOnClickListener(v -> {
-            Toast.makeText(this, "Đang kết nối với ví " + selectedMethod + "...", Toast.LENGTH_LONG).show();
+            // 3. Lấy dữ liệu từ giao diện để đóng gói (Dùng các biến bạn đã nạp data lúc nãy)
+            // Lưu ý: Lấy lại link poster từ Intent để lưu vào vé
+            String posterUrl = getIntent().getStringExtra("posterUrl");
 
-            // Chuyển sang màn hình Vé điện tử (Thành công)
-            Intent intent = new Intent(CheckoutActivity.this, TicketActivity.class);
-            startActivity(intent);
-            finish();
+            Ticket ticket = new Ticket(
+                    ticketId,
+                    tvMovieName.getText().toString(),
+                    tvCinema.getText().toString(),
+                    tvDateTime.getText().toString(),
+                    tvSeats.getText().toString(),
+                    tvSnacksName.getText().toString(),
+                    tvFinalTotal.getText().toString(),
+                    posterUrl,
+                    System.currentTimeMillis() // Lưu thời gian hiện tại để biết vé mới hay cũ
+            );
+
+            // 4. Đẩy dữ liệu lên Firebase
+            if (ticketId != null) {
+                dbRef.child(ticketId).setValue(ticket).addOnSuccessListener(aVoid -> {
+                    // Chỉ khi lưu xong mới báo thành công và chuyển trang
+                    Toast.makeText(this, "Thanh toán thành công qua " + selectedMethod, Toast.LENGTH_LONG).show();
+
+                    Intent intent = new Intent(this, MainActivity.class);
+                    intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP); // Xóa các màn hình cũ cho nhẹ máy
+                    startActivity(intent);
+                }).addOnFailureListener(e -> {
+                    Toast.makeText(this, "Lỗi lưu vé: " + e.getMessage(), Toast.LENGTH_SHORT).show();
+                });
+            }
         });
     }
 
-    private void initViews() {
-        btnBack = findViewById(R.id.btnBack);
-        edtPromoCode = findViewById(R.id.edtPromoCode);
-        btnApplyPromo = findViewById(R.id.btnApplyPromo);
-        btnConfirmPayment = findViewById(R.id.btnConfirmPayment);
-        tvFinalTotal = findViewById(R.id.tvFinalTotal); // Lưu ý: Hãy thêm ID này vào TextView hiển thị 240.000đ ở dưới cùng trong XML
+    private void anhXaView() {
+        tvMovieName = findViewById(R.id.tvMovieNameCheckout);
+        tvCinema = findViewById(R.id.tvCinemaCheckout);
+        tvDateTime = findViewById(R.id.tvDateTimeCheckout);
+        tvSeats = findViewById(R.id.tvSeatsCheckout);
+        tvSnacksName = findViewById(R.id.tvSnacksNameCheckout);
 
-        layoutZaloPay = findViewById(R.id.layoutZaloPay);
+        tvTempTicket = findViewById(R.id.tvTotalPrice);
+        tvSnackPrice = findViewById(R.id.tvSnackPriceCheckout);
+        tvDiscount = findViewById(R.id.tvDiscount);
+        tvFinalTotal = findViewById(R.id.tvFinalTotal);
+        imgPoster = findViewById(R.id.imgMoviePosterCheckout);
+
+        // Ánh xạ các khung thanh toán
+        layoutZalo = findViewById(R.id.layoutZaloPay);
         layoutMoMo = findViewById(R.id.layoutMoMo);
-        layoutCreditCard = findViewById(R.id.layoutCreditCard);
+        layoutCard = findViewById(R.id.layoutCreditCard);
     }
 
     private void setupPaymentSelection() {
-        layoutZaloPay.setOnClickListener(v -> {
-            selectedMethod = "ZaloPay";
-            Toast.makeText(this, "Đã chọn ZaloPay", Toast.LENGTH_SHORT).show();
-            // (Thực tế: Code logic thay đổi màu viền/checkbox tại đây)
-        });
+        View.OnClickListener paymentListener = v -> {
+            // 1. Reset tất cả về màu tối (Chưa chọn)
+            layoutZalo.setBackgroundResource(R.drawable.bg_input);
+            layoutMoMo.setBackgroundResource(R.drawable.bg_input);
+            layoutCard.setBackgroundResource(R.drawable.bg_input);
 
-        layoutMoMo.setOnClickListener(v -> {
-            selectedMethod = "MoMo";
-            Toast.makeText(this, "Đã chọn MoMo", Toast.LENGTH_SHORT).show();
-        });
+            // 2. Bật màu sáng (bg_card_3d) cho cái vừa được nhấn
+            v.setBackgroundResource(R.drawable.bg_card_3d);
 
-        layoutCreditCard.setOnClickListener(v -> {
-            selectedMethod = "Thẻ ngân hàng";
-            Toast.makeText(this, "Đã chọn Thẻ Visa/Mastercard", Toast.LENGTH_SHORT).show();
-        });
+            // 3. Lưu lại phương thức đã chọn
+            if (v.getId() == R.id.layoutZaloPay) selectedMethod = "ZaloPay";
+            else if (v.getId() == R.id.layoutMoMo) selectedMethod = "MoMo";
+            else if (v.getId() == R.id.layoutCreditCard) selectedMethod = "Thẻ ngân hàng";
+        };
+
+        layoutZalo.setOnClickListener(paymentListener);
+        layoutMoMo.setOnClickListener(paymentListener);
+        layoutCard.setOnClickListener(paymentListener);
     }
 
-    private void applyPromoCode() {
-        String code = edtPromoCode.getText().toString().trim();
-        if (TextUtils.isEmpty(code)) {
-            Toast.makeText(this, "Vui lòng nhập mã", Toast.LENGTH_SHORT).show();
-            return;
-        }
+    private void nhanVaHienThiData() {
+        Intent it = getIntent();
 
-        // Giả lập kiểm tra mã (Ví dụ mã CINEGO20 giảm 20k)
-        if (code.equalsIgnoreCase("CINEGO20")) {
-            discount = 20000;
-            updatePriceUI();
-            Toast.makeText(this, "Đã áp dụng mã giảm 20.000đ", Toast.LENGTH_SHORT).show();
+        ticketPrice = it.getLongExtra("totalPrice", 0);
+        snackPrice = it.getLongExtra("snackPrice", 0);
+        String snackDetails = it.getStringExtra("snackDetails");
+        finalTotal = ticketPrice + snackPrice;
+
+        String name = it.getStringExtra("movieName");
+        String cinema = it.getStringExtra("selectedCinema");
+        String date = it.getStringExtra("selectedDate");
+        String time = it.getStringExtra("selectedTime");
+        ArrayList<String> seats = it.getStringArrayListExtra("selectedSeats");
+        String poster = it.getStringExtra("posterUrl");
+
+        // Sửa lại trong CheckoutActivity.java
+        if (name != null) {
+            tvMovieName.setText(name);
         } else {
-            Toast.makeText(this, "Mã không hợp lệ hoặc đã hết hạn", Toast.LENGTH_SHORT).show();
+            tvMovieName.setText("Lỗi: Không nhận được tên phim");
+            // Nếu app hiện dòng này, nghĩa là bạn quên gửi movieName ở Seat hoặc Snacks
         }
-    }
+        tvCinema.setText(cinema);
+        tvDateTime.setText(date + " • " + time);
+        if (seats != null) tvSeats.setText("Ghế: " + android.text.TextUtils.join(", ", seats));
+        tvSnacksName.setText("Combo: " + (snackDetails != null ? snackDetails : "Không mua"));
 
-    private void updatePriceUI() {
-        int total = amountFromPrevious - discount;
-        if (tvFinalTotal != null) {
-            tvFinalTotal.setText(String.format("%,d đ", total));
+        tvTempTicket.setText(String.format("%,d đ", ticketPrice));
+        tvSnackPrice.setText(String.format("%,d đ", snackPrice));
+        tvFinalTotal.setText(String.format("%,d đ", finalTotal));
+
+        if (poster != null && !poster.isEmpty()) {
+            Glide.with(this).load(poster).into(imgPoster);
         }
     }
 }

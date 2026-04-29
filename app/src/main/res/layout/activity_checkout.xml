@@ -1,6 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
-<androidx.constraintlayout.widget.ConstraintLayout
-    xmlns:android="http://schemas.android.com/apk/res/android"
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
@@ -8,6 +7,7 @@
     android:background="@drawable/img_bg_bot"
     tools:context=".CheckoutActivity">
 
+    <!-- HEADER -->
     <androidx.constraintlayout.widget.ConstraintLayout
         android:id="@+id/layoutHeader"
         android:layout_width="match_parent"
@@ -23,9 +23,9 @@
             android:background="@drawable/bg_input"
             android:padding="10dp"
             android:src="@android:drawable/ic_menu_revert"
-            app:tint="@color/text_primary"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toTopOf="parent" />
+            app:layout_constraintTop_toTopOf="parent"
+            app:tint="@color/text_primary" />
 
         <TextView
             android:layout_width="wrap_content"
@@ -45,8 +45,8 @@
         android:layout_height="0dp"
         android:clipToPadding="false"
         android:paddingBottom="120dp"
-        app:layout_constraintTop_toBottomOf="@id/layoutHeader"
-        app:layout_constraintBottom_toBottomOf="parent">
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/layoutHeader">
 
         <LinearLayout
             android:layout_width="match_parent"
@@ -63,6 +63,7 @@
                 android:textSize="16sp"
                 android:textStyle="bold" />
 
+            <!-- CARD THÔNG TIN VÉ -->
             <androidx.constraintlayout.widget.ConstraintLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
@@ -71,79 +72,73 @@
                 android:padding="16dp">
 
                 <com.google.android.material.imageview.ShapeableImageView
-                    android:id="@+id/imgMoviePoster"
+                    android:id="@+id/imgMoviePosterCheckout"
                     android:layout_width="70dp"
                     android:layout_height="100dp"
                     android:scaleType="centerCrop"
                     android:src="@drawable/img_bg_login"
-                    app:shapeAppearanceOverlay="@style/circle_image_view"
                     app:layout_constraintStart_toStartOf="parent"
                     app:layout_constraintTop_toTopOf="parent"
-                    app:layout_constraintBottom_toBottomOf="parent" />
+                    app:shapeAppearanceOverlay="@style/circle_image_view" />
 
                 <LinearLayout
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
                     android:layout_marginStart="16dp"
                     android:orientation="vertical"
-                    app:layout_constraintStart_toEndOf="@id/imgMoviePoster"
                     app:layout_constraintEnd_toEndOf="parent"
-                    app:layout_constraintTop_toTopOf="parent"
-                    app:layout_constraintBottom_toBottomOf="parent">
+                    app:layout_constraintStart_toEndOf="@id/imgMoviePosterCheckout">
 
                     <TextView
+                        android:id="@+id/tvMovieNameCheckout"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:text="Avatar: Dòng Chảy Của Nước"
-                        android:textColor="@color/text_primary"
-                        android:textSize="16sp"
-                        android:textStyle="bold"
+                        android:ellipsize="end"
                         android:maxLines="2"
-                        android:ellipsize="end" />
+                        android:text="Tên phim"
+                        android:textColor="@color/text_primary"
+                        android:textSize="15sp"
+                        android:textStyle="bold" />
 
                     <TextView
+                        android:id="@+id/tvCinemaCheckout"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:layout_marginTop="6dp"
-                        android:text="CineGo Landmark 81"
+                        android:text="Tên rạp"
                         android:textColor="@color/text_secondary"
+                        android:textSize="12sp" />
+
+                    <TextView
+                        android:id="@+id/tvDateTimeCheckout"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:text="Ngày • Giờ"
+                        android:textColor="@color/text_secondary"
+                        android:textSize="12sp" />
+
+                    <TextView
+                        android:id="@+id/tvSeatsCheckout"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:text="Ghế: ..."
+                        android:textColor="@color/neon_cyan"
                         android:textSize="13sp" />
 
                     <TextView
+                        android:id="@+id/tvSnacksNameCheckout"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:layout_marginTop="4dp"
-                        android:text="Hôm nay • 13:15"
+                        android:text="Combo: ..."
                         android:textColor="@color/text_secondary"
                         android:textSize="13sp" />
-
-                    <LinearLayout
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:layout_marginTop="8dp"
-                        android:orientation="horizontal"
-                        android:gravity="center_vertical">
-                        <TextView
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:text="Ghế: "
-                            android:textColor="@color/text_secondary"
-                            android:textSize="13sp" />
-                        <TextView
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:text="M1, M2 (Ghế Đôi)"
-                            android:textColor="@color/neon_cyan"
-                            android:textSize="14sp"
-                            android:textStyle="bold" />
-                    </LinearLayout>
                 </LinearLayout>
             </androidx.constraintlayout.widget.ConstraintLayout>
 
+            <!-- MÃ GIẢM GIÁ -->
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_marginTop="32dp"
+                android:layout_marginTop="24dp"
                 android:text="Mã giảm giá"
                 android:textColor="@color/text_primary"
                 android:textSize="16sp"
@@ -158,15 +153,15 @@
                 <EditText
                     android:id="@+id/edtPromoCode"
                     android:layout_width="0dp"
-                    android:layout_weight="1"
                     android:layout_height="match_parent"
+                    android:layout_weight="1"
                     android:background="@drawable/bg_input"
-                    android:hint="Nhập mã khuyến mãi"
+                    android:hint="Nhập mã CINEGO"
+                    android:inputType="textCapCharacters"
                     android:paddingHorizontal="16dp"
                     android:textColor="@color/text_primary"
                     android:textColorHint="@color/text_secondary"
-                    android:textSize="14sp"
-                    android:inputType="textCapCharacters" />
+                    android:textSize="14sp" />
 
                 <androidx.appcompat.widget.AppCompatButton
                     android:id="@+id/btnApplyPromo"
@@ -180,10 +175,11 @@
                     android:textStyle="bold" />
             </LinearLayout>
 
+            <!-- PHƯƠNG THỨC THANH TOÁN -->
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_marginTop="32dp"
+                android:layout_marginTop="24dp"
                 android:text="Phương thức thanh toán"
                 android:textColor="@color/text_primary"
                 android:textSize="16sp"
@@ -197,19 +193,15 @@
                 android:background="@drawable/bg_card_3d"
                 android:paddingHorizontal="16dp">
 
-                <View android:layout_width="match_parent" android:layout_height="match_parent" android:background="@drawable/bg_input" android:backgroundTint="#1A66FCF1" />
-                <View android:layout_width="4dp" android:layout_height="0dp" android:background="@color/neon_cyan" app:layout_constraintTop_toTopOf="parent" app:layout_constraintBottom_toBottomOf="parent" app:layout_constraintStart_toStartOf="parent"/>
-
                 <View
                     android:id="@+id/iconZalo"
-                    android:layout_width="32dp"
-                    android:layout_height="32dp"
+                    android:layout_width="30dp"
+                    android:layout_height="30dp"
                     android:background="@drawable/circle_image_view"
                     android:backgroundTint="#0088FF"
                     app:layout_constraintBottom_toBottomOf="parent"
                     app:layout_constraintStart_toStartOf="parent"
-                    app:layout_constraintTop_toTopOf="parent"
-                    android:layout_marginStart="12dp"/>
+                    app:layout_constraintTop_toTopOf="parent" />
 
                 <TextView
                     android:layout_width="wrap_content"
@@ -217,19 +209,9 @@
                     android:layout_marginStart="12dp"
                     android:text="Ví ZaloPay"
                     android:textColor="@color/text_primary"
-                    android:textSize="15sp"
                     android:textStyle="bold"
                     app:layout_constraintBottom_toBottomOf="parent"
                     app:layout_constraintStart_toEndOf="@id/iconZalo"
-                    app:layout_constraintTop_toTopOf="parent" />
-
-                <ImageView
-                    android:layout_width="24dp"
-                    android:layout_height="24dp"
-                    android:src="@android:drawable/checkbox_on_background"
-                    app:tint="@color/neon_cyan"
-                    app:layout_constraintBottom_toBottomOf="parent"
-                    app:layout_constraintEnd_toEndOf="parent"
                     app:layout_constraintTop_toTopOf="parent" />
             </androidx.constraintlayout.widget.ConstraintLayout>
 
@@ -237,14 +219,14 @@
                 android:id="@+id/layoutMoMo"
                 android:layout_width="match_parent"
                 android:layout_height="60dp"
-                android:layout_marginTop="12dp"
+                android:layout_marginTop="8dp"
                 android:background="@drawable/bg_input"
                 android:paddingHorizontal="16dp">
 
                 <View
                     android:id="@+id/iconMoMo"
-                    android:layout_width="32dp"
-                    android:layout_height="32dp"
+                    android:layout_width="30dp"
+                    android:layout_height="30dp"
                     android:background="@drawable/circle_image_view"
                     android:backgroundTint="#A50064"
                     app:layout_constraintBottom_toBottomOf="parent"
@@ -257,18 +239,8 @@
                     android:layout_marginStart="12dp"
                     android:text="Ví MoMo"
                     android:textColor="@color/text_primary"
-                    android:textSize="15sp"
                     app:layout_constraintBottom_toBottomOf="parent"
                     app:layout_constraintStart_toEndOf="@id/iconMoMo"
-                    app:layout_constraintTop_toTopOf="parent" />
-
-                <ImageView
-                    android:layout_width="24dp"
-                    android:layout_height="24dp"
-                    android:src="@android:drawable/checkbox_off_background"
-                    app:tint="@color/text_secondary"
-                    app:layout_constraintBottom_toBottomOf="parent"
-                    app:layout_constraintEnd_toEndOf="parent"
                     app:layout_constraintTop_toTopOf="parent" />
             </androidx.constraintlayout.widget.ConstraintLayout>
 
@@ -276,19 +248,19 @@
                 android:id="@+id/layoutCreditCard"
                 android:layout_width="match_parent"
                 android:layout_height="60dp"
-                android:layout_marginTop="12dp"
+                android:layout_marginTop="8dp"
                 android:background="@drawable/bg_input"
                 android:paddingHorizontal="16dp">
 
                 <ImageView
                     android:id="@+id/iconCard"
-                    android:layout_width="32dp"
-                    android:layout_height="32dp"
+                    android:layout_width="30dp"
+                    android:layout_height="30dp"
                     android:src="@android:drawable/ic_menu_gallery"
-                    app:tint="@color/text_secondary"
                     app:layout_constraintBottom_toBottomOf="parent"
                     app:layout_constraintStart_toStartOf="parent"
-                    app:layout_constraintTop_toTopOf="parent" />
+                    app:layout_constraintTop_toTopOf="parent"
+                    app:tint="@color/text_secondary" />
 
                 <TextView
                     android:layout_width="wrap_content"
@@ -296,52 +268,103 @@
                     android:layout_marginStart="12dp"
                     android:text="Thẻ Visa / Mastercard"
                     android:textColor="@color/text_primary"
-                    android:textSize="15sp"
                     app:layout_constraintBottom_toBottomOf="parent"
                     app:layout_constraintStart_toEndOf="@id/iconCard"
                     app:layout_constraintTop_toTopOf="parent" />
-
-                <ImageView
-                    android:layout_width="24dp"
-                    android:layout_height="24dp"
-                    android:src="@android:drawable/checkbox_off_background"
-                    app:tint="@color/text_secondary"
-                    app:layout_constraintBottom_toBottomOf="parent"
-                    app:layout_constraintEnd_toEndOf="parent"
-                    app:layout_constraintTop_toTopOf="parent" />
             </androidx.constraintlayout.widget.ConstraintLayout>
 
-            <View
-                android:layout_width="match_parent"
-                android:layout_height="1dp"
-                android:layout_marginTop="32dp"
-                android:background="#33FFFFFF" />
-
+            <!-- CHI TIẾT THANH TOÁN -->
             <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="24dp"
-                android:orientation="horizontal">
-                <TextView android:layout_width="0dp" android:layout_height="wrap_content" android:layout_weight="1" android:text="Tạm tính" android:textColor="@color/text_secondary_black" android:textSize="14sp" />
-                <TextView android:layout_width="wrap_content" android:layout_height="wrap_content" android:text="240.000 đ" android:textColor="@color/text_primary_black" android:textSize="14sp" />
-            </LinearLayout>
+                android:layout_marginBottom="32dp"
+                android:background="@drawable/bg_card_3d"
+                android:orientation="vertical"
+                android:padding="20dp">
 
-            <LinearLayout
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_marginTop="12dp"
-                android:orientation="horizontal">
-                <TextView android:layout_width="0dp" android:layout_height="wrap_content" android:layout_weight="1" android:text="Giảm giá" android:textColor="@color/text_secondary_black" android:textSize="14sp" />
-                <TextView android:layout_width="wrap_content" android:layout_height="wrap_content" android:text="- 0 đ" android:textColor="@color/error_red" android:textSize="14sp" android:layout_marginBottom="100dp" />
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="Chi tiết thanh toán"
+                    android:textColor="@color/text_primary"
+                    android:textStyle="bold" />
+
+                <View
+                    android:layout_width="match_parent"
+                    android:layout_height="1dp"
+                    android:layout_marginTop="12dp"
+                    android:layout_marginBottom="12dp"
+                    android:background="#1AFFFFFF" />
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content">
+
+                    <TextView
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="1"
+                        android:text="Tạm tính (Vé)"
+                        android:textColor="@color/text_secondary" />
+
+                    <TextView
+                        android:id="@+id/tvTotalPrice"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="0 đ"
+                        android:textColor="@color/text_primary" />
+                </LinearLayout>
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="8dp">
+
+                    <TextView
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="1"
+                        android:text="Bắp &amp; Nước"
+                        android:textColor="@color/text_secondary" />
+
+                    <TextView
+                        android:id="@+id/tvSnackPriceCheckout"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="0 đ"
+                        android:textColor="@color/text_primary" />
+                </LinearLayout>
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="8dp">
+
+                    <TextView
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="1"
+                        android:text="Giảm giá"
+                        android:textColor="@color/text_secondary" />
+
+                    <TextView
+                        android:id="@+id/tvDiscount"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="- 0 đ"
+                        android:textColor="@color/error_red" />
+                </LinearLayout>
             </LinearLayout>
 
         </LinearLayout>
     </androidx.core.widget.NestedScrollView>
 
+    <!-- TỔNG THANH TOÁN -->
     <androidx.constraintlayout.widget.ConstraintLayout
         android:layout_width="match_parent"
         android:layout_height="100dp"
-        android:background="#99121212"
+        android:background="#E60B0C10"
         android:paddingHorizontal="20dp"
         app:layout_constraintBottom_toBottomOf="parent">
 
@@ -349,11 +372,25 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:orientation="vertical"
+            app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toTopOf="parent"
-            app:layout_constraintBottom_toBottomOf="parent">
-            <TextView android:layout_width="wrap_content" android:layout_height="wrap_content" android:text="Tổng thanh toán" android:textColor="@color/text_secondary" android:textSize="13sp" />
-            <TextView android:id="@+id/tvFinalTotal" android:layout_width="wrap_content" android:layout_height="wrap_content" android:layout_marginTop="2dp" android:text="240.000 đ" android:textColor="@color/neon_cyan" android:textSize="22sp" android:textStyle="bold" />
+            app:layout_constraintTop_toTopOf="parent">
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Tổng thanh toán"
+                android:textColor="@color/text_secondary"
+                android:textSize="13sp" />
+
+            <TextView
+                android:id="@+id/tvFinalTotal"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="0 đ"
+                android:textColor="@color/neon_cyan"
+                android:textSize="22sp"
+                android:textStyle="bold" />
         </LinearLayout>
 
         <androidx.appcompat.widget.AppCompatButton
@@ -366,9 +403,9 @@
             android:textColor="@color/bg_main"
             android:textSize="16sp"
             android:textStyle="bold"
+            app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintTop_toTopOf="parent"
-            app:layout_constraintBottom_toBottomOf="parent" />
+            app:layout_constraintTop_toTopOf="parent" />
     </androidx.constraintlayout.widget.ConstraintLayout>
 
 </androidx.constraintlayout.widget.ConstraintLayout>

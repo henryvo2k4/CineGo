@@ -1,10 +1,9 @@
 package com.example.cinego;
 
 import android.content.Intent;
+import android.content.res.ColorStateList;
+import android.graphics.Color;
 import android.os.Bundle;
-import android.view.View;
-import android.widget.Button;
-import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
 import androidx.appcompat.app.AppCompatActivity;
@@ -13,80 +12,97 @@ import java.util.List;
 
 public class SeatActivity extends AppCompatActivity {
 
-    private ImageView btnBack;
-    private Button btnCheckout;
-    private TextView tvTotalPrice, tvSelectedSeatsInfo;
-
-    private int totalPrice = 0;
+    private TextView tvSelectedInfo, tvTotalPrice;
     private List<String> selectedSeats = new ArrayList<>();
+    private long totalPrice = 0;
 
-    // Giá vé giả định
-    private final int PRICE_NORMAL = 60000;
-    private final int PRICE_VIP = 90000;
-    private final int PRICE_DOUBLE = 150000;
+    // Biến trung chuyển
+    private String movieName, posterUrl, selectedDate, selectedTime, selectedCinema;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_seat);
 
-        initViews();
+        // NHẬN DỮ LIỆU TỪ BOOKINGACTIVITY
+        movieName = getIntent().getStringExtra("movieName");
+        posterUrl = getIntent().getStringExtra("posterUrl");
+        selectedDate = getIntent().getStringExtra("selectedDate");
+        selectedTime = getIntent().getStringExtra("selectedTime");
+        selectedCinema = getIntent().getStringExtra("selectedCinema");
 
-        // Xử lý nút Back
-        btnBack.setOnClickListener(v -> finish());
+        tvSelectedInfo = findViewById(R.id.tvSelectedSeatsInfo);
+        tvTotalPrice = findViewById(R.id.tvTotalPrice);
 
-        // Xử lý nút Thanh toán
-        btnCheckout.setOnClickListener(v -> {
+        findViewById(R.id.btnBack).setOnClickListener(v -> finish());
+
+        // Thiết lập sự kiện cho các ghế (A, B, M như cũ)
+        setupAllSeats();
+
+        // NÚT THANH TOÁN - GỬI TIẾP DỮ LIỆU
+        // Trong SeatActivity.java
+        findViewById(R.id.btnCheckout).setOnClickListener(v -> {
             if (selectedSeats.isEmpty()) {
-                Toast.makeText(this, "Vui lòng chọn ít nhất một ghế!", Toast.LENGTH_SHORT).show();
+                Toast.makeText(this, "Vui lòng chọn ít nhất 1 ghế!", Toast.LENGTH_SHORT).show();
             } else {
-                Intent intent = new Intent(SeatActivity.this, SnacksActivity.class);
-                // Truyền tổng tiền sang màn hình bắp nước
-                intent.putExtra("TOTAL_TICKET_PRICE", totalPrice);
+                // ĐỔI HƯỚNG SANG SNACKS ACTIVITY
+                Intent intent = new Intent(this, SnacksActivity.class);
+
+                // Gửi toàn bộ dữ liệu đi (tiếp sức)
+                intent.putExtra("movieName", movieName);
+                intent.putExtra("posterUrl", posterUrl);
+                intent.putExtra("selectedDate", selectedDate);
+                intent.putExtra("selectedTime", selectedTime);
+                intent.putExtra("selectedCinema", selectedCinema);
+                intent.putExtra("totalPrice", totalPrice); // Đây là tiền ghế
+                intent.putStringArrayListExtra("selectedSeats", (ArrayList<String>) selectedSeats);
+
                 startActivity(intent);
             }
         });
-
-        // Thiết lập sự kiện click cho tất cả các ghế trong Grid
-        setupSeatClickListeners();
     }
 
-    private void initViews() {
-        btnBack = findViewById(R.id.btnBack);
-        btnCheckout = findViewById(R.id.btnCheckout);
-        tvTotalPrice = findViewById(R.id.tvTotalPrice);
-        tvSelectedSeatsInfo = findViewById(R.id.tvSelectedSeatsInfo);
+    private void setupAllSeats() {
+        int PRICE_NORMAL = 60000;
+        int PRICE_VIP = 90000;
+        int PRICE_DOUBLE = 150000;
+
+        setupSeat(findViewById(R.id.seatA1), "A1", PRICE_NORMAL);
+        setupSeat(findViewById(R.id.seatA2), "A2", PRICE_NORMAL);
+        setupSeat(findViewById(R.id.seatA4), "A4", PRICE_NORMAL);
+        setupSeat(findViewById(R.id.seatA5), "A5", PRICE_NORMAL);
+        setupSeat(findViewById(R.id.seatA6), "A6", PRICE_NORMAL);
+
+        setupSeat(findViewById(R.id.seatB1), "B1", PRICE_VIP);
+        setupSeat(findViewById(R.id.seatB2), "B2", PRICE_VIP);
+        setupSeat(findViewById(R.id.seatB3), "B3", PRICE_VIP);
+        setupSeat(findViewById(R.id.seatB4), "B4", PRICE_VIP);
+        setupSeat(findViewById(R.id.seatB5), "B5", PRICE_VIP);
+        setupSeat(findViewById(R.id.seatB6), "B6", PRICE_VIP);
+
+        setupSeat(findViewById(R.id.seatM1), "M1", PRICE_DOUBLE);
+        setupSeat(findViewById(R.id.seatM2), "M2", PRICE_DOUBLE);
+        setupSeat(findViewById(R.id.seatM3), "M3", PRICE_DOUBLE);
     }
 
-    private void setupSeatClickListeners() {
-        // Trong thực tế, bạn sẽ dùng RecyclerView để quản lý hàng trăm ghế.
-        // Ở đây, vì chúng ta dùng GridLayout cố định, ta sẽ tìm các View theo ID.
-        // Ví dụ xử lý cho một vài ghế tiêu biểu (A1, B3, M1...):
-
-        int[] seatIds = {R.id.seatA1, R.id.seatA2, R.id.seatA3, R.id.seatA4, R.id.seatA5, R.id.seatA6,
-                         R.id.seatB1, R.id.seatB2, R.id.seatB3, R.id.seatB4, R.id.seatB5, R.id.seatB6,
-                         R.id.seatM1, R.id.seatM2, R.id.seatM3};
-
-        for (int id : seatIds) {
-            View seat = findViewById(id);
-            if (seat != null) {
-                seat.setOnClickListener(v -> toggleSeatSelection(v, id));
+    private void setupSeat(TextView seatView, String seatName, int price) {
+        if (seatView == null) return;
+        seatView.setOnClickListener(v -> {
+            if (selectedSeats.contains(seatName)) {
+                selectedSeats.remove(seatName);
+                totalPrice -= price;
+                seatView.setBackgroundResource(R.drawable.bg_input);
+                seatView.setTextColor(Color.WHITE);
+                seatView.setBackgroundTintList(null);
+            } else {
+                selectedSeats.add(seatName);
+                totalPrice += price;
+                seatView.setBackgroundResource(R.drawable.bg_neon_button);
+                seatView.setTextColor(Color.parseColor("#0B0C10"));
+                seatView.setBackgroundTintList(null);
             }
-        }
-    }
-
-    private void toggleSeatSelection(View view, int seatId) {
-        // Logic:
-        // 1. Kiểm tra xem ghế đã chọn chưa (dựa trên danh sách selectedSeats)
-        // 2. Nếu chưa: Đổi màu nền sang Neon Cyan, thêm vào danh sách, cộng tiền.
-        // 3. Nếu rồi: Đổi lại màu cũ, xóa khỏi danh sách, trừ tiền.
-
-        // Tạm thời chỉ demo việc update UI
-        updateUI();
-    }
-
-    private void updateUI() {
-        tvTotalPrice.setText(String.format("%,d VNĐ", totalPrice));
-        tvSelectedSeatsInfo.setText(String.format("Tổng cộng (%d ghế)", selectedSeats.size()));
+            tvSelectedInfo.setText("Tổng cộng (" + selectedSeats.size() + " ghế)");
+            tvTotalPrice.setText(String.format("%,d VNĐ", totalPrice));
+        });
     }
 }
