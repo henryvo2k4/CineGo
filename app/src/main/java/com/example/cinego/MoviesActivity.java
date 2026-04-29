@@ -21,8 +21,10 @@ import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
 
+import java.text.Normalizer;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.regex.Pattern;
 
 public class MoviesActivity extends AppCompatActivity {
 
@@ -97,15 +99,28 @@ public class MoviesActivity extends AppCompatActivity {
         });
     }
 
+    // Hàm loại bỏ dấu tiếng Việt để tìm kiếm linh hoạt
+    private String removeAccents(String s) {
+        if (s == null) return "";
+        String temp = Normalizer.normalize(s, Normalizer.Form.NFD);
+        Pattern pattern = Pattern.compile("\\p{InCombiningDiacriticalMarks}+");
+        return pattern.matcher(temp).replaceAll("").toLowerCase().replaceAll("đ", "d");
+    }
+
     // Hàm lọc phim theo tên (Dùng cho thanh Search)
     private void filterMoviesByName(String query) {
+        String normalizedQuery = removeAccents(query).trim();
         List<Movie> filteredList = new ArrayList<>();
-        if (query.isEmpty()) {
+
+        if (normalizedQuery.isEmpty()) {
             filteredList.addAll(allMoviesList);
         } else {
             for (Movie m : allMoviesList) {
-                if (m.getTitle() != null && m.getTitle().toLowerCase().contains(query)) {
-                    filteredList.add(m);
+                if (m.getTitle() != null) {
+                    String normalizedTitle = removeAccents(m.getTitle());
+                    if (normalizedTitle.contains(normalizedQuery)) {
+                        filteredList.add(m);
+                    }
                 }
             }
         }
@@ -167,7 +182,13 @@ public class MoviesActivity extends AppCompatActivity {
         if (tvMovieCount != null) {
             tvMovieCount.setText("Tìm thấy " + list.size() + " phim");
         }
-        rvMovies.setLayoutManager(new GridLayoutManager(this, 2));
+        
+        // Chỉ thiết lập LayoutManager một lần duy nhất
+        if (rvMovies.getLayoutManager() == null) {
+            rvMovies.setLayoutManager(new GridLayoutManager(this, 2));
+        }
+
+        // Tạo adapter mới và gán lại (Để tối ưu hơn bạn nên viết hàm updateData trong Adapter)
         movieAdapter = new MovieAdapter(this, list);
         rvMovies.setAdapter(movieAdapter);
     }

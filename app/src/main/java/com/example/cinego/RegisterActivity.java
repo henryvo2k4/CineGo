@@ -4,15 +4,19 @@ import android.app.DatePickerDialog;
 import android.content.Intent;
 import android.os.Bundle;
 import android.text.TextUtils;
+import android.util.Patterns;
+import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.LinearLayout;
+import android.widget.ProgressBar;
 import android.widget.TextView;
 import android.widget.Toast;
 
 import androidx.appcompat.app.AppCompatActivity;
 
 import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.auth.FirebaseAuthUserCollisionException;
 import com.google.firebase.database.FirebaseDatabase;
 
 import java.util.Calendar;
@@ -24,6 +28,7 @@ public class RegisterActivity extends AppCompatActivity {
     private TextView tvDay, tvMonth, tvYear, tvLogin;
     private Button btnRegister;
     private LinearLayout layoutDob;
+    private ProgressBar progressBar;
 
     // Khai báo Firebase
     private FirebaseAuth mAuth;
@@ -68,6 +73,7 @@ public class RegisterActivity extends AppCompatActivity {
 
         btnRegister = findViewById(R.id.btnRegister);
         layoutDob = findViewById(R.id.layoutDob);
+        progressBar = findViewById(R.id.progressBar);
     }
 
     // Hàm hiển thị Bảng chọn Ngày Tháng
@@ -105,6 +111,10 @@ public class RegisterActivity extends AppCompatActivity {
             Toast.makeText(this, "Vui lòng nhập đầy đủ thông tin!", Toast.LENGTH_SHORT).show();
             return;
         }
+        if (!Patterns.EMAIL_ADDRESS.matcher(email).matches()) {
+            Toast.makeText(this, "Định dạng email không hợp lệ!", Toast.LENGTH_SHORT).show();
+            return;
+        }
         if (day.equals("Ngày sinh") || month.equals("Tháng sinh") || year.equals("Năm sinh")) {
             Toast.makeText(this, "Vui lòng chọn ngày sinh!", Toast.LENGTH_SHORT).show();
             return;
@@ -118,6 +128,9 @@ public class RegisterActivity extends AppCompatActivity {
             return;
         }
 
+        // --- HIỂN THỊ TRẠNG THÁI CHỜ ---
+        setLoading(true);
+
         // --- GỌI FIREBASE ĐỂ TẠO TÀI KHOẢN ---
         mAuth.createUserWithEmailAndPassword(email, password)
                 .addOnCompleteListener(task -> {
@@ -129,10 +142,12 @@ public class RegisterActivity extends AppCompatActivity {
                         User newUser = new User(name, email, phone, dob, "user");
 
                         // Đẩy lên nhánh "users" -> "Mã ID"
-                        FirebaseDatabase.getInstance().getReference("users")
+                        FirebaseDatabase.getInstance("https://cinego-7aed8-default-rtdb.asia-southeast1.firebasedatabase.app")
+                                .getReference("users")
                                 .child(userId)
                                 .setValue(newUser)
                                 .addOnCompleteListener(dbTask -> {
+                                    setLoading(false);
                                     if (dbTask.isSuccessful()) {
                                         Toast.makeText(RegisterActivity.this, "Đăng ký thành công!", Toast.LENGTH_SHORT).show();
                                         // Chuyển sang trang chủ
@@ -143,8 +158,25 @@ public class RegisterActivity extends AppCompatActivity {
                                     }
                                 });
                     } else {
-                        Toast.makeText(this, "Đăng ký thất bại: " + task.getException().getMessage(), Toast.LENGTH_LONG).show();
+                        setLoading(false);
+                        if (task.getException() instanceof FirebaseAuthUserCollisionException) {
+                            Toast.makeText(this, "Email này đã được sử dụng bởi tài khoản khác!", Toast.LENGTH_LONG).show();
+                        } else {
+                            Toast.makeText(this, "Đăng ký thất bại: " + task.getException().getMessage(), Toast.LENGTH_LONG).show();
+                        }
                     }
                 });
+    }
+
+    private void setLoading(boolean isLoading) {
+        if (isLoading) {
+            progressBar.setVisibility(View.VISIBLE);
+            btnRegister.setText(""); // Ẩn chữ trên nút
+            btnRegister.setEnabled(false); // Vô hiệu hóa nút
+        } else {
+            progressBar.setVisibility(View.GONE);
+            btnRegister.setText("Đăng Ký Ngay");
+            btnRegister.setEnabled(true);
+        }
     }
 }

@@ -32,8 +32,12 @@ public class NotificationsActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_notifications);
 
-        // KẾT NỐI FIREBASE
-        dbRef = FirebaseDatabase.getInstance("https://cinego-7aed8-default-rtdb.asia-southeast1.firebasedatabase.app").getReference("notifications");
+        // KẾT NỐI FIREBASE THEO USER ID
+        String userId = com.google.firebase.auth.FirebaseAuth.getInstance().getUid();
+        if (userId != null) {
+            dbRef = FirebaseDatabase.getInstance("https://cinego-7aed8-default-rtdb.asia-southeast1.firebasedatabase.app")
+                    .getReference("notifications").child(userId);
+        }
 
         anhXa();
         fetchData();

@@ -64,8 +64,11 @@ public class MyTicketsActivity extends AppCompatActivity {
     }
 
     private void fetchTicketsFromFirebase() {
+        String userId = com.google.firebase.auth.FirebaseAuth.getInstance().getUid();
+        if (userId == null) return;
+
         DatabaseReference dbRef = FirebaseDatabase.getInstance("https://cinego-7aed8-default-rtdb.asia-southeast1.firebasedatabase.app")
-                .getReference("booked_tickets");
+                .getReference("booked_tickets").child(userId);
 
         dbRef.addValueEventListener(new ValueEventListener() {
             @Override

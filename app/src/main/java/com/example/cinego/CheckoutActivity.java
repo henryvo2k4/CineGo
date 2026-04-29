@@ -52,9 +52,15 @@ public class CheckoutActivity extends AppCompatActivity {
         // Xác nhận thanh toán
 
         findViewById(R.id.btnConfirmPayment).setOnClickListener(v -> {
-            // 1. Kết nối Firebase để lưu vé
+            String currentUserId = com.google.firebase.auth.FirebaseAuth.getInstance().getUid();
+            if (currentUserId == null) {
+                Toast.makeText(this, "Vui lòng đăng nhập để thanh toán!", Toast.LENGTH_SHORT).show();
+                return;
+            }
+
+            // 1. Kết nối Firebase để lưu vé dưới ID người dùng
             DatabaseReference dbRef = FirebaseDatabase.getInstance("https://cinego-7aed8-default-rtdb.asia-southeast1.firebasedatabase.app")
-                    .getReference("booked_tickets");
+                    .getReference("booked_tickets").child(currentUserId);
 
             String ticketId = dbRef.push().getKey();
             String posterUrl = getIntent().getStringExtra("posterUrl");
@@ -75,9 +81,9 @@ public class CheckoutActivity extends AppCompatActivity {
             if (ticketId != null) {
                 dbRef.child(ticketId).setValue(ticket).addOnSuccessListener(aVoid -> {
 
-                    // --- 2. TỰ ĐỘNG TẠO THÔNG BÁO HỆ THỐNG ---
+                    // --- 2. TỰ ĐỘNG TẠO THÔNG BÁO HỆ THỐNG CHO NGƯỜI DÙNG NÀY ---
                     DatabaseReference notiRef = FirebaseDatabase.getInstance("https://cinego-7aed8-default-rtdb.asia-southeast1.firebasedatabase.app")
-                            .getReference("notifications");
+                            .getReference("notifications").child(currentUserId);
 
                     String notiId = notiRef.push().getKey();
                     if (notiId != null) {
