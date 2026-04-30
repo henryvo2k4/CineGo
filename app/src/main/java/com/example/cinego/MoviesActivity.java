@@ -154,6 +154,25 @@ public class MoviesActivity extends AppCompatActivity {
         });
     }
 
+    private String buildMoviePrompt() {
+        StringBuilder sb = new StringBuilder();
+
+        sb.append("Bạn là trợ lý của app CineGo.\n");
+        sb.append("Chỉ được phép gợi ý phim trong danh sách dưới đây.\n");
+        sb.append("Nếu người dùng hỏi phim không có, trả lời: 'Hiện app chưa có phim này.'\n\n");
+
+        for (Movie m : allMoviesList) {
+            sb.append("- ").append(m.getTitle());
+
+            if (m.getGenre() != null) {
+                sb.append(" (").append(m.getGenre()).append(")");
+            }
+
+            sb.append("\n");
+        }
+
+        return sb.toString();
+    }
     private void setupGenreClickListeners() {
         if (btnAll != null) btnAll.setOnClickListener(v -> filterMovies("Tất cả"));
         if (btnAction != null) btnAction.setOnClickListener(v -> filterMovies("Hành động"));
@@ -239,7 +258,10 @@ public class MoviesActivity extends AppCompatActivity {
                 } else if (itemId == R.id.nav_movies) {
                     return true;
                 } else if (itemId == R.id.nav_ai_chat) {
-                    startActivity(new Intent(getApplicationContext(), AiChatActivity.class));
+                    Intent intent = new Intent(MoviesActivity.this, AiChatActivity.class);
+                    intent.putExtra("movie_prompt", buildMoviePrompt());
+                    startActivity(intent);
+                    overridePendingTransition(0, 0);
                     return true;
                 } else if (itemId == R.id.nav_notifications) {
                     startActivity(new Intent(getApplicationContext(), NotificationsActivity.class));
