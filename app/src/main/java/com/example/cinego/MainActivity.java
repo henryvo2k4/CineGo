@@ -93,10 +93,12 @@ public class MainActivity extends AppCompatActivity {
                 // Nạp dữ liệu vào các danh sách khác nhau
                 setupRecyclerView(rvAiSuggested, movieList);
 
-                List<Movie> list2 = new ArrayList<>(movieList); Collections.shuffle(list2);
+                List<Movie> list2 = new ArrayList<>(movieList);
+                Collections.shuffle(list2);
                 setupRecyclerView(rvNowPlaying, list2);
 
-                List<Movie> list3 = new ArrayList<>(movieList); Collections.shuffle(list3);
+                List<Movie> list3 = new ArrayList<>(movieList);
+                Collections.shuffle(list3);
                 setupRecyclerView(rvHotMovies, list3);
             }
 
@@ -148,7 +150,8 @@ public class MainActivity extends AppCompatActivity {
                 Intent intent = null;
                 if (id == R.id.nav_movies) intent = new Intent(this, MoviesActivity.class);
                 else if (id == R.id.nav_ai_chat) intent = new Intent(this, AiChatActivity.class);
-                else if (id == R.id.nav_notifications) intent = new Intent(this, NotificationsActivity.class);
+                else if (id == R.id.nav_notifications)
+                    intent = new Intent(this, NotificationsActivity.class);
                 else if (id == R.id.nav_tickets) intent = new Intent(this, MyTicketsActivity.class);
 
                 if (intent != null) {
@@ -162,8 +165,14 @@ public class MainActivity extends AppCompatActivity {
     }
 
     @Override
-    protected void onPause() { super.onPause(); sliderHandler.removeCallbacks(sliderRunnable); }
+    protected void onPause() {
+        super.onPause();
+        sliderHandler.removeCallbacks(sliderRunnable);
+    }
 
     @Override
-    protected void onResume() { super.onResume(); sliderHandler.postDelayed(sliderRunnable, 3000); }
+    protected void onResume() {
+        super.onResume();
+        sliderHandler.postDelayed(sliderRunnable, 3000);
+    }
 }

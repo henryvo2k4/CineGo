@@ -35,9 +35,11 @@ public class MovieDetailActivity extends AppCompatActivity {
     private EditText edtComment;
     private LinearLayout layoutComments;
 
+
     private String movieId;
     private String nameStr = ""; // Biến lưu tên phim
     private String posterStr = ""; // Biến lưu ảnh phim
+    private String trailerUrlStr = "";
     private FirebaseUser currentUser;
     private DatabaseReference dbRef;
 
@@ -62,6 +64,16 @@ public class MovieDetailActivity extends AppCompatActivity {
             loadMovieDetails();
             loadComments();
         }
+        // xử lý nút trailer
+        findViewById(R.id.btnWatchTrailer).setOnClickListener(v -> {
+            if (trailerUrlStr != null && !trailerUrlStr.isEmpty()) {
+                // Lệnh mở ứng dụng YouTube hoặc Trình duyệt web
+                Intent intent = new Intent(Intent.ACTION_VIEW, android.net.Uri.parse(trailerUrlStr));
+                startActivity(intent);
+            } else {
+                Toast.makeText(this, "Phim này hiện chưa có Trailer!", Toast.LENGTH_SHORT).show();
+            }
+        });
 
         btnBack.setOnClickListener(v -> finish());
 
@@ -111,6 +123,8 @@ public class MovieDetailActivity extends AppCompatActivity {
                     // Cập nhật lại biến nếu dữ liệu Firebase mới hơn
                     nameStr = m.getTitle();
                     posterStr = m.getPosterUrl();
+
+                    trailerUrlStr = m.getTrailerUrl();//trailer
 
                     tvMovieTitle.setText(m.getTitle());
                     tvSynopsis.setText(m.getSynopsis());
