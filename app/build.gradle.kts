@@ -49,6 +49,11 @@ dependencies {
     implementation("com.google.firebase:firebase-auth")
     implementation("com.google.firebase:firebase-database")
 
+    // Thư viện phát YouTube mượt nhất hiện nay
+    implementation("com.pierfrancescosoffritti.androidyoutubeplayer:core:12.1.0")
+
+    implementation("com.pierfrancescosoffritti.androidyoutubeplayer:core:12.1.0")
+
     // Thư viện tải ảnh Glide
     implementation("com.github.bumptech.glide:glide:4.16.0")
 
