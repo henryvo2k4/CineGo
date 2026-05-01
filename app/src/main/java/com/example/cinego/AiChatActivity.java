@@ -9,6 +9,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.EditText;
 import android.widget.ImageView;
+import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import androidx.annotation.NonNull;
@@ -180,6 +181,7 @@ public class AiChatActivity extends AppCompatActivity {
             chatAdapter.notifyItemChanged(index);
         }
     }
+
     // --- HÀM ĐIỀU HƯỚNG TAB ---
     private void setupBottomNavigation() {
         BottomNavigationView bottomNavigationView = findViewById(R.id.bottomNavigation);
@@ -210,46 +212,79 @@ public class AiChatActivity extends AppCompatActivity {
             });
         }
     }
-    static class ChatMessage {
-        String text, sender;
 
-        ChatMessage(String t, String s) {
-            text = t;
-            sender = s;
+    public static class ChatMessage {
+        private String text;
+        private String sender;
+
+        public ChatMessage(String text, String sender) {
+            this.text = text;
+            this.sender = sender;
+        }
+
+        public String getText() {
+            return text;
         }
 
         public void setText(String text) {
             this.text = text;
         }
 
-        public String getText() {
-            return text;
+
+        public String getSender() {
+            return sender;
         }
     }
 
-    class ChatAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
+    public class ChatAdapter extends RecyclerView.Adapter<ChatAdapter.MyViewHolder> {
         List<ChatMessage> list;
 
-        ChatAdapter(List<ChatMessage> l) { list = l; }
-
-        @Override
-        public int getItemCount() { return list.size(); }
+        public ChatAdapter(List<ChatMessage> list) {
+            this.list = list;
+        }
 
         @NonNull
         @Override
-        public RecyclerView.ViewHolder onCreateViewHolder(@NonNull ViewGroup p, int v) {
-            View view = LayoutInflater.from(p.getContext())
-                    .inflate(android.R.layout.simple_list_item_1, p, false);
-            return new RecyclerView.ViewHolder(view) {};
+        public MyViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
+            // Nạp file item_chat_bubble.xml bạn vừa tạo
+            View v = LayoutInflater.from(parent.getContext()).inflate(R.layout.item_chat_bubble, parent, false);
+            return new MyViewHolder(v);
         }
 
         @Override
-        public void onBindViewHolder(@NonNull RecyclerView.ViewHolder h, int i) {
-            TextView tv = h.itemView.findViewById(android.R.id.text1);
-            ChatMessage m = list.get(i);
+        public void onBindViewHolder(@NonNull MyViewHolder holder, int position) {
+            ChatMessage m = list.get(position);
 
-            tv.setText((m.sender.equals("me") ? "Bạn: " : "AI: ") + m.text);
-            tv.setGravity(m.sender.equals("me") ? Gravity.END : Gravity.START);
+            // Kiểm tra xem ai là người gửi
+            if (m.getSender().equals("me")) {
+                // Nếu là mình: Hiện bên phải, ẩn bên trái
+                holder.rightView.setVisibility(View.VISIBLE);
+                holder.leftView.setVisibility(View.GONE);
+                holder.rightText.setText(m.getText());
+            } else {
+                // Nếu là AI: Hiện bên trái, ẩn bên phải
+                holder.leftView.setVisibility(View.VISIBLE);
+                holder.rightView.setVisibility(View.GONE);
+                holder.leftText.setText(m.getText());
+            }
+        }
+
+        @Override
+        public int getItemCount() {
+            return list.size();
+        }
+
+        public class MyViewHolder extends RecyclerView.ViewHolder {
+            LinearLayout leftView, rightView;
+            TextView leftText, rightText;
+
+            public MyViewHolder(@NonNull View v) {
+                super(v);
+                leftView = v.findViewById(R.id.left_chat_view);
+                rightView = v.findViewById(R.id.right_chat_view);
+                leftText = v.findViewById(R.id.left_chat_text_view);
+                rightText = v.findViewById(R.id.right_chat_text_view);
+            }
         }
     }
 }

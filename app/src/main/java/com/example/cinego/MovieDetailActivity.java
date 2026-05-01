@@ -5,6 +5,7 @@ import android.os.Bundle;
 import android.text.TextUtils;
 import android.view.LayoutInflater;
 import android.view.View;
+import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageView;
@@ -20,6 +21,9 @@ import com.bumptech.glide.Glide;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.database.*;
+import com.pierfrancescosoffritti.androidyoutubeplayer.core.player.YouTubePlayer;
+import com.pierfrancescosoffritti.androidyoutubeplayer.core.player.listeners.AbstractYouTubePlayerListener;
+import com.pierfrancescosoffritti.androidyoutubeplayer.core.player.views.YouTubePlayerView;
 
 import java.util.ArrayList;
 import java.util.Collections;
@@ -51,6 +55,7 @@ public class MovieDetailActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_movie_detail);
 
+
         initViews();
         currentUser = FirebaseAuth.getInstance().getCurrentUser();
         dbRef = FirebaseDatabase.getInstance("https://cinego-7aed8-default-rtdb.asia-southeast1.firebasedatabase.app").getReference();
@@ -66,10 +71,12 @@ public class MovieDetailActivity extends AppCompatActivity {
         }
         // xử lý nút trailer
         findViewById(R.id.btnWatchTrailer).setOnClickListener(v -> {
+            Toast.makeText(this, "Đang chuẩn bị mở Trailer...", Toast.LENGTH_SHORT).show();
             if (trailerUrlStr != null && !trailerUrlStr.isEmpty()) {
                 // Lệnh mở ứng dụng YouTube hoặc Trình duyệt web
-                Intent intent = new Intent(Intent.ACTION_VIEW, android.net.Uri.parse(trailerUrlStr));
-                startActivity(intent);
+//                Intent intent = new Intent(Intent.ACTION_VIEW, android.net.Uri.parse(trailerUrlStr));
+//                startActivity(intent);
+                showTrailerPopup(trailerUrlStr);
             } else {
                 Toast.makeText(this, "Phim này hiện chưa có Trailer!", Toast.LENGTH_SHORT).show();
             }
@@ -132,7 +139,11 @@ public class MovieDetailActivity extends AppCompatActivity {
                     tvRatingCount.setText("(" + m.getRatingCount() + " đánh giá)");
                     tvGenre.setText(m.getGenre());
                     tvActors.setText("Diễn viên: " + m.getActors());
-                    Glide.with(MovieDetailActivity.this).load(m.getPosterUrl()).into(imgBackdrop);
+                    if (!isFinishing() && !isDestroyed()) { // Kiểm tra Activity còn sống không
+                        Glide.with(MovieDetailActivity.this)
+                                .load(m.getPosterUrl())
+                                .into(imgBackdrop);
+                    }
                 }
             }
 
@@ -229,5 +240,48 @@ public class MovieDetailActivity extends AppCompatActivity {
         edtComment = findViewById(R.id.edtComment);
         layoutComments = findViewById(R.id.layoutComments);
         btnBookTicket = findViewById(R.id.btnBookTicket);
+    }
+
+    private void showTrailerPopup(String trailerUrl) {
+        try {
+            // 1. Lấy mã ID video từ link
+            String videoId = "d9MyW72ELq0"; // Mặc định Avatar
+            if (trailerUrl.contains("v=")) {
+                videoId = trailerUrl.split("v=")[1].split("&")[0];
+            } else if (trailerUrl.contains("youtu.be/")) {
+                videoId = trailerUrl.split("youtu.be/")[1].split("\\?")[0];
+            }
+
+            // 2. Tạo giao diện cho Popup từ file XML của bạn
+            View dialogView = getLayoutInflater().inflate(R.layout.dialog_trailer, null);
+            YouTubePlayerView youtubePlayerView = dialogView.findViewById(R.id.youtube_player_view);
+
+            // 3. Xây dựng cửa sổ bằng AlertDialog (Rất ổn định)
+            androidx.appcompat.app.AlertDialog dialog = new androidx.appcompat.app.AlertDialog.Builder(MovieDetailActivity.this)
+                    .setView(dialogView)
+                    .create();
+
+            // 4. Thiết lập video
+            String finalVideoId = videoId;
+            youtubePlayerView.addYouTubePlayerListener(new AbstractYouTubePlayerListener() {
+                @Override
+                public void onReady(@NonNull YouTubePlayer youtubePlayer) {
+                    youtubePlayer.loadVideo(finalVideoId, 0);
+                }
+            });
+
+            // Hiện ID để bạn kiểm tra (xóa sau khi chạy được)
+            Toast.makeText(this, "ID Phim: " + finalVideoId, Toast.LENGTH_SHORT).show();
+
+            // 5. Hiển thị
+            dialog.show();
+
+            // Tự động tắt video khi đóng cửa sổ
+            dialog.setOnDismissListener(d -> youtubePlayerView.release());
+
+        } catch (Exception e) {
+            // Nếu có lỗi lạ gì đó, mở app YouTube như phương án dự phòng
+            startActivity(new Intent(Intent.ACTION_VIEW, android.net.Uri.parse(trailerUrl)));
+        }
     }
 }

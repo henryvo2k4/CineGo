@@ -42,6 +42,12 @@
             app:layout_constraintTop_toTopOf="@id/btnBack" />
     </androidx.constraintlayout.widget.ConstraintLayout>
 
+    <!-- Lớp màn che để làm tối nền -->
+    <View
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:background="#99000000" /> <!-- 99 là độ mờ 60%, 000000 là màu đen -->
+
     <!-- RECYCLERVIEW CHAT (Lớp hiển thị tin nhắn) -->
     <androidx.recyclerview.widget.RecyclerView
         android:id="@+id/rvChat"
