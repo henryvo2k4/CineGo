@@ -1,14 +1,13 @@
 package com.example.cinego;
 
 public class User {
-    private String fullName;
-    private String email;
-    private String phone;
-    private String dob;
-    private String role;
+    private String fullName, email, phone, dob, role;
+
+    private String avatarName;
+
 
     public User() {
-    } // Constructor trống cho Firebase
+    } // Bắt buộc phải có để Firebase hoạt động
 
     public User(String fullName, String email, String phone, String dob, String role) {
         this.fullName = fullName;
@@ -18,7 +17,7 @@ public class User {
         this.role = role;
     }
 
-    // --- THÊM CÁC HÀM GETTER NÀY VÀO ---
+    // Các hàm Getter
     public String getFullName() {
         return fullName;
     }
@@ -37,5 +36,9 @@ public class User {
 
     public String getRole() {
         return role;
+    }
+
+    public String getAvatarName() {
+        return avatarName;
     }
 }

@@ -52,6 +52,8 @@ public class CheckoutActivity extends AppCompatActivity {
         // Xác nhận thanh toán
 
         findViewById(R.id.btnConfirmPayment).setOnClickListener(v -> {
+
+
             String currentUserId = com.google.firebase.auth.FirebaseAuth.getInstance().getUid();
             if (currentUserId == null) {
                 Toast.makeText(this, "Vui lòng đăng nhập để thanh toán!", Toast.LENGTH_SHORT).show();
@@ -65,7 +67,10 @@ public class CheckoutActivity extends AppCompatActivity {
             String ticketId = dbRef.push().getKey();
             String posterUrl = getIntent().getStringExtra("posterUrl");
 
-            // Tạo đối tượng vé để lưu
+            // Lấy thể loại phim từ Intent (được truyền từ trang chủ/chi tiết sang)
+            String genre = getIntent().getStringExtra("genre");
+            if (genre == null) genre = "Hành động"; // Mặc định nếu bị sót dữ liệu
+
             Ticket ticket = new Ticket(
                     ticketId,
                     tvMovieName.getText().toString(),
@@ -75,9 +80,9 @@ public class CheckoutActivity extends AppCompatActivity {
                     tvSnacksName.getText().toString(),
                     tvFinalTotal.getText().toString(),
                     posterUrl,
+                    genre, // THÊM BIẾN NÀY VÀO ĐÂY
                     System.currentTimeMillis()
             );
-
             if (ticketId != null) {
                 dbRef.child(ticketId).setValue(ticket).addOnSuccessListener(aVoid -> {
 

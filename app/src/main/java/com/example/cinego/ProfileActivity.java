@@ -2,10 +2,16 @@ package com.example.cinego;
 
 import android.content.Intent;
 import android.os.Bundle;
+import android.view.View;
+import android.widget.EditText;
+import android.widget.ImageView;
+import android.widget.LinearLayout;
+import android.widget.ProgressBar;
 import android.widget.TextView;
 import android.widget.Toast;
 
 import androidx.annotation.NonNull;
+import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.AppCompatButton;
 
@@ -17,9 +23,17 @@ import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
 
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+
 public class ProfileActivity extends AppCompatActivity {
 
-    private TextView tvName, tvEmail, tvDob, tvPhone, tvWatchedMoviesCount, tvBoughtTicketsCount;
+    private TextView tvName, tvEmail, tvDob, tvPhone, tvWatchedMoviesCount, tvBoughtTicketsCount, tvFavoriteGenre, tvAIConclusion;
+    private View layoutAIInsight;
+    private ImageView imgAvatar, btnChangeAvatar, btnEditProfile;
     private AppCompatButton btnLogout;
     private FirebaseAuth mAuth;
     private DatabaseReference dbRef;
@@ -29,29 +43,32 @@ public class ProfileActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_profile);
 
-        // 1. Khởi tạo Firebase
         mAuth = FirebaseAuth.getInstance();
         FirebaseUser currentUser = mAuth.getCurrentUser();
 
         if (currentUser != null) {
             dbRef = FirebaseDatabase.getInstance("https://cinego-7aed8-default-rtdb.asia-southeast1.firebasedatabase.app")
                     .getReference("users").child(currentUser.getUid());
+
+            anhXaView();
+            loadUserInfo(); // Gọi hàm tải dữ liệu
+
+            // 1. Đổi Avatar
+            btnChangeAvatar.setOnClickListener(v -> showAvatarDialog());
+
+            // 2. Chỉnh sửa thông tin (Bút chì)
+            btnEditProfile.setOnClickListener(v -> showEditProfileDialog());
+
+            // 3. Đăng xuất
+            btnLogout.setOnClickListener(v -> {
+                mAuth.signOut();
+                Toast.makeText(this, "Hẹn gặp lại bạn! 👋", Toast.LENGTH_SHORT).show();
+                Intent intent = new Intent(ProfileActivity.this, LoginActivity.class);
+                intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
+                startActivity(intent);
+                finish();
+            });
         }
-
-        anhXaView();
-        loadUserInfo();
-
-        // 2. Xử lý nút Đăng xuất
-        btnLogout.setOnClickListener(v -> {
-            mAuth.signOut(); // Lệnh đăng xuất của Firebase
-            Toast.makeText(this, "Đã đăng xuất!", Toast.LENGTH_SHORT).show();
-
-            // Quay lại màn hình Login và xóa lịch sử các trang trước
-            Intent intent = new Intent(ProfileActivity.this, LoginActivity.class);
-            intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
-            startActivity(intent);
-            finish();
-        });
     }
 
     private void anhXaView() {
@@ -61,13 +78,19 @@ public class ProfileActivity extends AppCompatActivity {
         tvPhone = findViewById(R.id.tvPhone);
         tvWatchedMoviesCount = findViewById(R.id.tvWatchedMoviesCount);
         tvBoughtTicketsCount = findViewById(R.id.tvBoughtTicketsCount);
+        tvFavoriteGenre = findViewById(R.id.tvFavoriteGenre);
+        tvAIConclusion = findViewById(R.id.tvAIConclusion);
+        layoutAIInsight = findViewById(R.id.layoutAIInsight);
+        imgAvatar = findViewById(R.id.imgAvatar);
+        btnChangeAvatar = findViewById(R.id.btnChangeAvatar);
+        btnEditProfile = findViewById(R.id.btnEditProfile);
         btnLogout = findViewById(R.id.btnLogout);
     }
 
     private void loadUserInfo() {
         if (dbRef == null) return;
 
-        // 1. Lấy thông tin cơ bản
+        // --- PHẦN 1: NẠP THÔNG TIN CÁ NHÂN (Tên, Email, Avatar) ---
         dbRef.addValueEventListener(new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot snapshot) {
@@ -78,15 +101,20 @@ public class ProfileActivity extends AppCompatActivity {
                         tvEmail.setText("📧 " + user.getEmail());
                         tvDob.setText("📅 " + user.getDob());
                         tvPhone.setText("📞 " + user.getPhone());
+
+                        // Nạp ảnh đại diện
+                        String avtName = snapshot.child("avatarName").getValue(String.class);
+                        if (avtName != null && !avtName.isEmpty()) {
+                            int resId = getResources().getIdentifier(avtName, "drawable", getPackageName());
+                            if (resId != 0) imgAvatar.setImageResource(resId);
+                        }
                     }
                 }
             }
-
-            @Override
-            public void onCancelled(@NonNull DatabaseError error) {}
+            @Override public void onCancelled(@NonNull DatabaseError error) {}
         });
 
-        // 2. Lấy số lượng vé đã mua
+        // --- PHẦN 2: NẠP VÀ ĐẾM SỐ VÉ THẬT ---
         String userId = FirebaseAuth.getInstance().getUid();
         if (userId != null) {
             DatabaseReference ticketsRef = FirebaseDatabase.getInstance("https://cinego-7aed8-default-rtdb.asia-southeast1.firebasedatabase.app")
@@ -95,14 +123,92 @@ public class ProfileActivity extends AppCompatActivity {
             ticketsRef.addValueEventListener(new ValueEventListener() {
                 @Override
                 public void onDataChange(@NonNull DataSnapshot snapshot) {
-                    long count = snapshot.getChildrenCount();
-                    tvBoughtTicketsCount.setText(String.valueOf(count));
-                    tvWatchedMoviesCount.setText(String.valueOf(count)); // Tạm thời lấy bằng số vé
-                }
+                    // ĐÂY MỚI LÀ CHỖ ĐẾM VÉ ĐÚNG!
+                    long totalTickets = snapshot.getChildrenCount();
 
-                @Override
-                public void onCancelled(@NonNull DatabaseError error) {}
+                    tvBoughtTicketsCount.setText(String.valueOf(totalTickets));
+
+                    int watchedCount = 0;
+                    long now = System.currentTimeMillis();
+                    java.util.Map<String, Integer> genreMap = new java.util.HashMap<>();
+
+                    for (DataSnapshot data : snapshot.getChildren()) {
+                        Ticket t = data.getValue(Ticket.class);
+                        if (t != null) {
+                            // 1. Phân loại Phim đã xem (> 2 tiếng)
+                            if (now - t.getTimestamp() > 7200000) watchedCount++;
+
+                            // 2. Đếm thể loại cho AI Insight
+                            String g = (t.getGenre() != null) ? t.getGenre() : "Khác";
+                            String[] items = g.split(",\\s*");
+                            for (String item : items) {
+                                String key = item.trim();
+                                genreMap.put(key, genreMap.getOrDefault(key, 0) + 1);
+                            }
+                        }
+                    }
+
+                    tvWatchedMoviesCount.setText(String.valueOf(watchedCount));
+
+                    // 3. Cập nhật AI Insight
+                    if (totalTickets == 0) {
+                        tvFavoriteGenre.setText("---");
+                        layoutAIInsight.setVisibility(View.GONE);
+                    } else {
+                        layoutAIInsight.setVisibility(View.VISIBLE);
+                        List<Map.Entry<String, Integer>> sorted = new ArrayList<>(genreMap.entrySet());
+                        Collections.sort(sorted, (a, b) -> b.getValue().compareTo(a.getValue()));
+
+                        tvFavoriteGenre.setText(sorted.get(0).getKey());
+                        updateDynamicCharts(sorted, totalTickets);
+                    }
+                }
+                @Override public void onCancelled(@NonNull DatabaseError error) {}
             });
         }
+    }
+
+    private void updateDynamicCharts(List<Map.Entry<String, Integer>> sorted, long total) {
+        ProgressBar[] pbs = {findViewById(R.id.pbAction), findViewById(R.id.pbRomance), findViewById(R.id.pbHorror)};
+        TextView[] tvs = {findViewById(R.id.tvPAction), findViewById(R.id.tvPRomance), findViewById(R.id.tvPHorror)};
+
+        for (int i = 0; i < 3; i++) {
+            if (i < sorted.size()) {
+                int percent = (int) ((sorted.get(i).getValue() * 100) / total);
+                pbs[i].setVisibility(View.VISIBLE); pbs[i].setProgress(percent);
+                tvs[i].setVisibility(View.VISIBLE); tvs[i].setText(sorted.get(i).getKey() + " (" + percent + "%)");
+            } else {
+                pbs[i].setVisibility(View.GONE); tvs[i].setVisibility(View.GONE);
+            }
+        }
+    }
+
+    private void showEditProfileDialog() {
+        AlertDialog.Builder builder = new AlertDialog.Builder(this);
+        builder.setTitle("Sửa thông tin cá nhân");
+        LinearLayout l = new LinearLayout(this); l.setOrientation(LinearLayout.VERTICAL); l.setPadding(60, 20, 60, 20);
+        final EditText n = new EditText(this); n.setHint("Tên mới"); l.addView(n);
+        final EditText p = new EditText(this); p.setHint("SĐT mới"); l.addView(p);
+        builder.setView(l).setPositiveButton("Lưu", (d, w) -> {
+            if (!n.getText().toString().isEmpty()) dbRef.child("fullName").setValue(n.getText().toString());
+            if (!p.getText().toString().isEmpty()) dbRef.child("phone").setValue(p.getText().toString());
+            Toast.makeText(this, "Đã cập nhật!", Toast.LENGTH_SHORT).show();
+        }).show();
+    }
+
+    private void showAvatarDialog() {
+        android.app.Dialog d = new android.app.Dialog(this);
+        d.setContentView(R.layout.dialog_select_avatar);
+        int[] ids = {R.id.avt1, R.id.avt2, R.id.avt3, R.id.avt4};
+        String[] names = {"image1", "image2", "image3", "image4"};
+        for (int i = 0; i < ids.length; i++) {
+            final String name = names[i];
+            View v = d.findViewById(ids[i]);
+            if (v != null) v.setOnClickListener(view -> {
+                dbRef.child("avatarName").setValue(name);
+                d.dismiss();
+            });
+        }
+        d.show();
     }
 }

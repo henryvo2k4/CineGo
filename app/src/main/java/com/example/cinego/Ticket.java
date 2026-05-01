@@ -9,12 +9,15 @@ public class Ticket {
     private String snacks;
     private String totalPrice;
     private String posterUrl;
+    private String genre; // Thể loại phim
     private long timestamp;
 
-    // Bắt buộc phải có Constructor trống cho Firebase
-    public Ticket() {}
+    public Ticket() {
+    } // Bắt buộc cho Firebase
 
-    public Ticket(String id, String movieName, String cinemaName, String dateTime, String seats, String snacks, String totalPrice, String posterUrl, long timestamp) {
+    public Ticket(String id, String movieName, String cinemaName, String dateTime,
+                  String seats, String snacks, String totalPrice, String posterUrl,
+                  String genre, long timestamp) {
         this.id = id;
         this.movieName = movieName;
         this.cinemaName = cinemaName;
@@ -23,17 +26,48 @@ public class Ticket {
         this.snacks = snacks;
         this.totalPrice = totalPrice;
         this.posterUrl = posterUrl;
+        this.genre = genre;
         this.timestamp = timestamp;
     }
 
-    // Getter và Setter (Bạn có thể nhấn Alt + Insert để tự tạo nhanh)
-    public String getId() { return id; }
-    public String getMovieName() { return movieName; }
-    public String getCinemaName() { return cinemaName; }
-    public String getDateTime() { return dateTime; }
-    public String getSeats() { return seats; }
-    public String getSnacks() { return snacks; }
-    public String getTotalPrice() { return totalPrice; }
-    public String getPosterUrl() { return posterUrl; }
-    public long getTimestamp() { return timestamp; }
+    // Các hàm lấy dữ liệu (Getters)
+    public String getId() {
+        return id;
+    }
+
+    public String getMovieName() {
+        return movieName;
+    }
+
+    public String getCinemaName() {
+        return cinemaName;
+    }
+
+    public String getDateTime() {
+        return dateTime;
+    }
+
+    public String getSeats() {
+        return seats;
+    }
+
+    public String getSnacks() {
+        return snacks;
+    }
+
+    public String getTotalPrice() {
+        return totalPrice;
+    }
+
+    public String getPosterUrl() {
+        return posterUrl;
+    }
+
+    public String getGenre() {
+        return genre;
+    } // Đã sửa thành String
+
+    public long getTimestamp() {
+        return timestamp;
+    }
 }
