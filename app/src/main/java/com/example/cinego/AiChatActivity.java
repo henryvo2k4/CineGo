@@ -38,7 +38,8 @@ public class AiChatActivity extends AppCompatActivity {
     private ChatAdapter chatAdapter;
 
     private static final String TAG = "GROQ_DEBUG";
-    private static final String API_KEY = "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";
+//    private static final String API_KEY = "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";
+    private static final String API_KEY = "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";
 
     private String moviePrompt = "";
 

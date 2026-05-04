@@ -171,7 +171,7 @@ public class SnacksActivity extends AppCompatActivity {
         String finalDetails = details.toString();
         if (finalDetails.endsWith(", "))
             finalDetails = finalDetails.substring(0, finalDetails.length() - 2);
-
+        it.putExtra("selectedDate", selectedDate); // GỬI TIẾP NGÀY THẬT ĐI
         it.putExtra("movieName", movieName);
         it.putExtra("posterUrl", posterUrl);
         it.putExtra("snackPrice", totalSnacks);

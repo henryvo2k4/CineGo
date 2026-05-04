@@ -34,6 +34,8 @@ public class SeatActivity extends AppCompatActivity {
         tvSelectedInfo = findViewById(R.id.tvSelectedSeatsInfo);
         tvTotalPrice = findViewById(R.id.tvTotalPrice);
 
+
+
         findViewById(R.id.btnBack).setOnClickListener(v -> finish());
 
         // Thiết lập sự kiện cho các ghế (A, B, M như cũ)
